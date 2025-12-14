@@ -8,6 +8,8 @@ import {
 import Image from 'next/image';
 
 // IMPORTATIONS
+// Assure-toi que ces chemins existent bien chez toi. 
+// Si tu as renommé 'data' en 'donnees', modifie ici.
 import { Product, CartItem, INITIAL_PRODUCTS } from '../data/store';
 import ProductModal from '../components/ProductModal';
 import CheckoutForm from '../components/CheckoutForm';
@@ -104,11 +106,10 @@ export default function Home() {
       <nav className="fixed w-full top-8 bg-white/90 backdrop-blur-md z-50 border-b border-gray-100 transition-all">
         <div className="max-w-7xl mx-auto px-4 h-20 flex items-center justify-between">
           
-          {/* LOGO CORRIGE */}
+          {/* LOGO */}
           <div className="flex items-center gap-3 cursor-pointer group">
             <div className="relative w-10 h-10 shadow-md rounded-full overflow-hidden group-hover:scale-110 transition duration-300">
-               {/* CHEMIN MIS A JOUR ICI */}
-               <Image src="/image/logo.jpeg" alt="Logo" fill className="object-cover" />
+               <Image src="/logo.jpeg" alt="Logo" fill className="object-cover" />
             </div>
             <span className="font-extrabold text-xl tracking-tight text-slate-900">BLUE ENERGY</span>
           </div>
@@ -233,18 +234,17 @@ export default function Home() {
         </div>
       </section>
 
-      {/* FOOTER AVEC LOGO CORRIGE */}
+      {/* FOOTER */}
       <footer className="py-16 border-t border-gray-100 text-center bg-white relative">
         <div className="relative w-12 h-12 mx-auto mb-6 shadow-xl rounded-full overflow-hidden">
-            {/* CHEMIN MIS A JOUR ICI */}
-            <Image src="/image/logo.jpeg" alt="Logo" fill className="object-cover" />
+            <Image src="/logo.jpeg" alt="Logo" fill className="object-cover" />
         </div>
         <p className="font-black text-2xl tracking-tighter mb-6 text-[#0A1128]">BLUE ENERGY</p>
         
         <div className="flex justify-center gap-8 mb-8 text-sm font-bold text-gray-400 uppercase tracking-widest flex-wrap px-4">
             <a href="https://www.instagram.com/blueenergy237?igsh=ODlqdnkxb255YnA4&utm_source=qr" target="_blank" className="hover:text-[#0A1128] transition">Instagram</a>
             <a href="https://www.tiktok.com/@bluenergy237?_r=1&_t=ZN-92D2KTJMpQU" target="_blank" className="hover:text-[#0A1128] transition">TikTok</a>
-            <a href="https://whatsapp.com/channel/0029VaR2SDvCxoAunCACDW1E" target="_blank" className="hover:text-[#0A1128] transition">WhatsApp</a>
+            <a href="https://whatsapp.com/channel/0029VaR2SDvCxoAunCACDW1E" target="_blank" className="hover:text-[#0A1128] transition">Chaîne WhatsApp</a>
         </div>
         
         <div className="text-gray-400 text-sm space-y-2">

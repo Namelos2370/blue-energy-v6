@@ -9,14 +9,13 @@ export const metadata: Metadata = {
   description: "Découvrez la nouvelle collection Blue Energy 2026. Streetwear premium conçu à Yaoundé.",
   keywords: ["Blue Energy", "Streetwear Cameroun", "Mode Yaoundé", "Vêtements luxe", "237"],
   icons: {
-    // CORRECTION ICI : Chemin vers le dossier 'image' et extension .jpeg
-    icon: "/image/logo.jpeg", 
-    apple: "/image/logo.jpeg",
+    icon: "/logo.jpeg", 
+    apple: "/logo.jpeg",
   },
   openGraph: {
     title: "Blue Energy - Collection 2026",
     description: "Le nouveau standard du streetwear au Cameroun.",
-    images: ["/image/logo.jpeg"],
+    images: ["/logo.jpeg"],
   },
 };
 
