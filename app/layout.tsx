@@ -4,19 +4,19 @@ import "./globals.css";
 
 const inter = Inter({ subsets: ["latin"] });
 
-// C'est ici qu'on gère le référencement (SEO) et le Logo de l'onglet
 export const metadata: Metadata = {
-  title: "Blue Energy | Officiel",
-  description: "Découvrez la nouvelle collection Blue Energy. Streetwear premium conçu à Yaoundé. Hoodies, T-shirts et accessoires de luxe.",
+  title: "Blue Energy | Elevate Your Standard",
+  description: "Découvrez la nouvelle collection Blue Energy 2026. Streetwear premium conçu à Yaoundé.",
   keywords: ["Blue Energy", "Streetwear Cameroun", "Mode Yaoundé", "Vêtements luxe", "237"],
   icons: {
-    icon: "/images/logo.jpeg", // <--- C'est ça qui remplace le logo React dans l'onglet !
-    apple: "/images/logo.jpeg", // Pour les iPhone
+    // CORRECTION ICI : Chemin vers le dossier 'image' et extension .jpeg
+    icon: "/image/logo.jpeg", 
+    apple: "/image/logo.jpeg",
   },
   openGraph: {
     title: "Blue Energy - Collection 2026",
     description: "Le nouveau standard du streetwear au Cameroun.",
-    images: ["/images/logo.jpeg"], // Image qui s'affiche quand on partage sur WhatsApp/FB
+    images: ["/image/logo.jpeg"],
   },
 };
 
