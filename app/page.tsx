@@ -109,7 +109,7 @@ export default function Home() {
           {/* LOGO */}
           <div className="flex items-center gap-3 cursor-pointer group">
             <div className="relative w-10 h-10 shadow-md rounded-full overflow-hidden group-hover:scale-110 transition duration-300">
-               <Image src="/logo.JPEG" alt="Logo" fill className="object-cover" />
+               <Image src="/logo.jpeg" alt="Logo" fill className="object-cover" />
             </div>
             <span className="font-extrabold text-xl tracking-tight text-slate-900">BLUE ENERGY</span>
           </div>
@@ -237,7 +237,7 @@ export default function Home() {
       {/* FOOTER */}
       <footer className="py-16 border-t border-gray-100 text-center bg-white relative">
         <div className="relative w-12 h-12 mx-auto mb-6 shadow-xl rounded-full overflow-hidden">
-            <Image src="/logo.JPEG" alt="Logo" fill className="object-cover" />
+            <Image src="/logo.jpeg" alt="Logo" fill className="object-cover" />
         </div>
         <p className="font-black text-2xl tracking-tighter mb-6 text-[#0A1128]">BLUE ENERGY</p>
         
