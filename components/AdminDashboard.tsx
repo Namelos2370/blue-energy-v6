@@ -1,191 +1,288 @@
 "use client";
 import React, { useState } from 'react';
-import { X, Plus, Trash2, Lock, LogOut, Package, Upload, Zap, Eye, AlignLeft } from 'lucide-react';
-import Image from 'next/image';
+import { X, Save, Eye, Package, Tag, Trash2, Plus, Lock, Search, Edit2 } from 'lucide-react';
 import { Product } from '../data/store';
+
+// On définit le type PromoCode ici pour être sûr
+type PromoCode = { code: string; percent: number };
 
 interface AdminProps {
   isOpen: boolean;
   onClose: () => void;
   products: Product[];
-  setProducts: (products: Product[]) => void;
-  views: number; // <--- NOUVEAU : On reçoit le nombre de vues
+  setProducts: React.Dispatch<React.SetStateAction<Product[]>>;
+  views: number;
+  promoCodes: PromoCode[];
+  setPromoCodes: React.Dispatch<React.SetStateAction<PromoCode[]>>;
 }
 
-export default function AdminDashboard({ isOpen, onClose, products, setProducts, views }: AdminProps) {
+export default function AdminDashboard({ isOpen, onClose, products, setProducts, views, promoCodes, setPromoCodes }: AdminProps) {
+  // --- ÉTATS SÉCURITÉ & UI ---
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [password, setPassword] = useState("");
-  const [error, setError] = useState("");
-  const [newImage, setNewImage] = useState<string>(""); 
+  const [activeTab, setActiveTab] = useState<'products' | 'promos'>('products');
+  const [searchTerm, setSearchTerm] = useState("");
+
+  // --- ÉTATS FORMULAIRE AJOUT PRODUIT ---
+  const [showAddForm, setShowAddForm] = useState(false);
+  const [newProduct, setNewProduct] = useState<Partial<Product>>({
+    title: "", price: 0, stock: 10, category: "t-shirt", tag: "NOUVEAU", images: ["/images/placeholder.png"]
+  });
+
+  // --- ÉTATS PROMOS ---
+  const [newCode, setNewCode] = useState("");
+  const [newPercent, setNewPercent] = useState(10);
 
   if (!isOpen) return null;
 
-  // LOGIN
-  const handleLogin = (e: React.FormEvent) => {
-    e.preventDefault();
-    if (password === "2025") { setIsAuthenticated(true); setError(""); } 
-    else { setError("Mot de passe incorrect"); }
-  };
-
-  // UPLOAD
-  const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
-    if (file) {
-      if (file.size > 2000000) { alert("Image trop lourde ! Max 2Mo."); return; }
-      const reader = new FileReader();
-      reader.onloadend = () => setNewImage(reader.result as string);
-      reader.readAsDataURL(file);
+  // 🔒 GESTION CONNEXION
+  const handleLogin = () => {
+    if (password === "admin") { // <--- CHANGE LE MOT DE PASSE ICI SI TU VEUX
+      setIsAuthenticated(true);
+    } else {
+      alert("Mot de passe incorrect !");
     }
   };
 
-  // ACTIONS
-  const updateStock = (id: number, newStock: number) => {
-    setProducts(products.map(p => p.id === id ? { ...p, stock: Math.max(0, newStock) } : p));
+  // 📦 GESTION PRODUITS
+  const handleUpdateProduct = (id: number, field: keyof Product, value: any) => {
+    setProducts(prev => prev.map(p => p.id === id ? { ...p, [field]: value } : p));
   };
-  const setOutOfStock = (id: number) => { if (confirm("Marquer comme ÉPUISÉ ?")) updateStock(id, 0); };
-  const deleteProduct = (id: number) => { if (confirm("Supprimer ?")) setProducts(products.filter(p => p.id !== id)); };
 
-  const handleAddProduct = (e: React.FormEvent) => {
-    e.preventDefault();
-    const form = e.target as HTMLFormElement;
-    const formData = new FormData(form);
+  const handleDeleteProduct = (id: number) => {
+    if (confirm("Voulez-vous vraiment supprimer ce produit ?")) {
+      setProducts(prev => prev.filter(p => p.id !== id));
+    }
+  };
+
+  const handleAddProduct = () => {
+    if (!newProduct.title || !newProduct.price) return alert("Remplissez au moins le nom et le prix");
     
-    // Récupération de la description facultative
-    const customDesc = formData.get('desc') as string;
-
-    const newProduct: Product = {
-      id: Date.now(),
-      title: formData.get('title') as string,
-      price: Number(formData.get('price')),
-      stock: Number(formData.get('stock')),
-      category: formData.get('category') as any, 
-      tag: "Nouveau",
-      desc: customDesc || "Nouvelle pièce exclusive Blue Energy.", // Utilise la desc ou une phrase par défaut
-      images: [newImage || "/images/hoodie.png"], 
-      sizes: ["S", "M", "L", "XL"],
-      colors: ["Black", "White"]
+    const productToAdd: Product = {
+      id: Date.now(), // ID unique basé sur l'heure
+      title: newProduct.title,
+      price: Number(newProduct.price),
+      stock: Number(newProduct.stock),
+      category: newProduct.category as any,
+      tag: newProduct.tag || "NOUVEAU",
+      images: ["/images/hoodie.png"], // Image par défaut si vide
+      description: "Description par défaut"
     };
 
-    setProducts([...products, newProduct]);
-    form.reset(); setNewImage(""); alert("Produit ajouté !");
+    setProducts(prev => [productToAdd, ...prev]);
+    setShowAddForm(false);
+    setNewProduct({ title: "", price: 0, stock: 10, category: "t-shirt", tag: "NOUVEAU" });
   };
 
+  // 🏷️ GESTION PROMOS
+  const handleAddPromo = () => {
+    if (!newCode) return;
+    const code = newCode.toUpperCase().trim();
+    if (promoCodes.find(p => p.code === code)) return alert("Ce code existe déjà !");
+    setPromoCodes(prev => [...prev, { code, percent: Number(newPercent) }]);
+    setNewCode("");
+    setNewPercent(10);
+  };
+
+  const handleDeletePromo = (code: string) => {
+    setPromoCodes(prev => prev.filter(p => p.code !== code));
+  };
+
+  // --- ÉCRAN DE CONNEXION ---
   if (!isAuthenticated) {
     return (
-      <div className="fixed inset-0 z-[100] bg-black/90 backdrop-blur-md flex items-center justify-center p-4">
-        <div className="bg-white w-full max-w-sm p-8 rounded-3xl shadow-2xl text-center">
-          <div className="w-16 h-16 bg-blue-100 text-blue-900 rounded-full flex items-center justify-center mx-auto mb-6"><Lock size={32} /></div>
-          <h2 className="text-2xl font-black mb-2 text-[#0A1128]">Admin 2026</h2>
-          <form onSubmit={handleLogin} className="space-y-4">
-            <input type="password" placeholder="Code PIN" className="w-full text-center text-2xl font-bold tracking-widest p-4 bg-gray-50 border rounded-xl" value={password} onChange={(e) => setPassword(e.target.value)} autoFocus />
-            {error && <p className="text-red-500 text-sm font-bold">{error}</p>}
-            <button type="submit" className="w-full bg-[#0A1128] text-white py-4 rounded-xl font-bold">Déverrouiller</button>
-            <button type="button" onClick={onClose} className="text-gray-400 text-sm underline">Retour au site</button>
-          </form>
+      <div className="fixed inset-0 z-[100] flex items-center justify-center bg-black/90 backdrop-blur-sm p-4">
+        <div className="bg-white p-8 rounded-2xl w-full max-w-sm text-center shadow-2xl">
+          <div className="w-16 h-16 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-6">
+            <Lock size={32} className="text-[#0A1128]" />
+          </div>
+          <h2 className="text-2xl font-black text-[#0A1128] mb-2">ACCÈS RESTREINT</h2>
+          <p className="text-gray-400 text-sm mb-6">Veuillez vous identifier pour gérer la boutique.</p>
+          <input 
+            type="password" 
+            placeholder="Mot de passe" 
+            className="w-full border-2 border-gray-200 rounded-xl p-3 mb-4 font-bold text-center focus:border-[#0A1128] outline-none"
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+            onKeyDown={(e) => e.key === 'Enter' && handleLogin()}
+          />
+          <button onClick={handleLogin} className="w-full bg-[#0A1128] text-white py-3 rounded-xl font-bold hover:bg-blue-900 transition">
+            ENTRER
+          </button>
+          <button onClick={onClose} className="mt-4 text-xs text-gray-400 hover:text-black underline">Retour au site</button>
         </div>
       </div>
     );
   }
 
+  // --- DASHBOARD COMPLET ---
   return (
-    <div className="fixed inset-0 z-[100] bg-gray-50 flex flex-col overflow-hidden animate-in fade-in">
-      {/* Header */}
-      <div className="bg-[#0A1128] text-white p-4 shadow-lg flex justify-between items-center shrink-0">
-        <div className="flex items-center gap-4">
-             <h2 className="font-bold text-xl flex items-center gap-2"><Package /> Pilotage</h2>
-             {/* COMPTEUR DE VUES */}
-             <div className="bg-white/10 px-3 py-1 rounded-full flex items-center gap-2 text-sm font-bold text-green-400 border border-green-500/30">
-                <Eye size={14}/> {views.toLocaleString()} Vues
-             </div>
+    <div className="fixed inset-0 z-[100] flex items-center justify-center bg-black/80 backdrop-blur-sm p-4">
+      <div className="bg-white w-full max-w-5xl rounded-3xl overflow-hidden shadow-2xl flex flex-col max-h-[90vh] animate-in zoom-in-95 duration-200">
+        
+        {/* HEADER */}
+        <div className="bg-[#0A1128] text-white p-6 flex justify-between items-center shrink-0">
+          <div className="flex items-center gap-4">
+            <h2 className="text-2xl font-black tracking-tight">ADMIN PANEL</h2>
+            <div className="flex gap-2 text-xs font-bold bg-white/10 px-3 py-1 rounded-full items-center">
+               <Eye size={14} /> {views} Vues
+            </div>
+          </div>
+          <button onClick={onClose} className="p-2 hover:bg-white/20 rounded-full transition"><X /></button>
         </div>
-        <div className="flex gap-4">
-          <button onClick={() => setIsAuthenticated(false)} className="text-gray-400 hover:text-white flex items-center gap-2"><LogOut size={18}/> Quitter</button>
-          <button onClick={onClose} className="bg-white/10 p-2 rounded-full hover:bg-white/20"><X size={20}/></button>
-        </div>
-      </div>
 
-      <div className="flex-grow overflow-auto p-4 md:p-8">
-        <div className="max-w-6xl mx-auto space-y-8">
+        {/* TABS */}
+        <div className="flex border-b bg-gray-50">
+          <button onClick={() => setActiveTab('products')} className={`flex-1 p-4 font-bold flex items-center justify-center gap-2 border-b-4 transition ${activeTab === 'products' ? 'border-[#0A1128] text-[#0A1128] bg-white' : 'border-transparent text-gray-400 hover:bg-gray-100'}`}>
+            <Package size={18} /> PRODUITS ({products.length})
+          </button>
+          <button onClick={() => setActiveTab('promos')} className={`flex-1 p-4 font-bold flex items-center justify-center gap-2 border-b-4 transition ${activeTab === 'promos' ? 'border-[#0A1128] text-[#0A1128] bg-white' : 'border-transparent text-gray-400 hover:bg-gray-100'}`}>
+            <Tag size={18} /> CODES PROMO ({promoCodes.length})
+          </button>
+        </div>
+
+        {/* CONTENU SCROLLABLE */}
+        <div className="overflow-y-auto p-6 flex-grow bg-gray-50/50">
           
-          {/* 1. TABLEAU STOCKS */}
-          <div className="bg-white rounded-2xl shadow-sm border border-gray-200 overflow-hidden">
-             {/* ... (Tableau identique à avant, je ne le remets pas pour raccourcir, le code est déjà chez toi, garde la partie tableau) ... */}
-             {/* Pour la clarté de la réponse, j'inclus le tableau complet ci-dessous */}
-             <div className="p-6 border-b border-gray-100 flex justify-between items-center">
-              <h3 className="font-bold text-lg text-gray-800">Inventaire</h3>
-              <span className="text-xs font-bold bg-blue-100 text-blue-800 px-3 py-1 rounded-full">{products.length} références</span>
-            </div>
-            <div className="overflow-x-auto">
-              <table className="w-full text-left text-sm">
-                <thead className="bg-gray-50 text-gray-500 font-bold uppercase">
-                  <tr><th className="p-4">Produit</th><th className="p-4">Prix</th><th className="p-4 text-center">Stock</th><th className="p-4 text-right">Actions</th></tr>
-                </thead>
-                <tbody className="divide-y divide-gray-100">
-                  {products.map(p => (
-                    <tr key={p.id} className={`transition ${p.stock === 0 ? 'bg-red-50/50' : 'hover:bg-gray-50'}`}>
-                      <td className="p-4 flex gap-3 items-center">
-                        <div className="w-10 h-10 bg-gray-100 rounded overflow-hidden relative"><Image src={p.images[0]} alt={p.title} fill className="object-cover" /></div>
-                        <div>
-                            <div className="font-bold text-[#0A1128]">{p.title}</div>
-                            {p.stock === 0 && <span className="text-[10px] bg-red-100 text-red-600 px-1 rounded font-bold">RUPTURE</span>}
+          {/* --- ONGLET PRODUITS --- */}
+          {activeTab === 'products' && (
+            <div className="space-y-6">
+              
+              {/* BARRE D'OUTILS */}
+              <div className="flex flex-col md:flex-row gap-4 justify-between items-center sticky top-0 bg-gray-50/95 backdrop-blur p-2 z-10">
+                <div className="relative w-full md:w-auto">
+                  <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" size={16} />
+                  <input 
+                    type="text" 
+                    placeholder="Rechercher un produit..." 
+                    className="pl-10 pr-4 py-2 rounded-lg border border-gray-200 w-full md:w-64 focus:outline-none focus:border-blue-600"
+                    value={searchTerm}
+                    onChange={(e) => setSearchTerm(e.target.value)}
+                  />
+                </div>
+                <button onClick={() => setShowAddForm(!showAddForm)} className="bg-[#0A1128] text-white px-4 py-2 rounded-lg font-bold flex items-center gap-2 hover:bg-blue-900 transition">
+                  <Plus size={18} /> {showAddForm ? 'Annuler' : 'Ajouter Produit'}
+                </button>
+              </div>
+
+              {/* FORMULAIRE D'AJOUT */}
+              {showAddForm && (
+                <div className="bg-blue-50 border border-blue-100 p-6 rounded-xl animate-in slide-in-from-top-4">
+                  <h3 className="font-bold text-blue-900 mb-4">Nouveau Produit</h3>
+                  <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-4">
+                    <input type="text" placeholder="Nom du produit" className="p-2 rounded border" value={newProduct.title} onChange={e => setNewProduct({...newProduct, title: e.target.value})} />
+                    <input type="number" placeholder="Prix (FCFA)" className="p-2 rounded border" value={newProduct.price || ''} onChange={e => setNewProduct({...newProduct, price: Number(e.target.value)})} />
+                    <input type="number" placeholder="Stock" className="p-2 rounded border" value={newProduct.stock} onChange={e => setNewProduct({...newProduct, stock: Number(e.target.value)})} />
+                    <select className="p-2 rounded border" value={newProduct.category} onChange={e => setNewProduct({...newProduct, category: e.target.value as any})}>
+                      <option value="t-shirt">T-Shirt</option>
+                      <option value="hoodie">Hoodie</option>
+                      <option value="accessoire">Accessoire</option>
+                    </select>
+                  </div>
+                  <button onClick={handleAddProduct} className="bg-blue-600 text-white px-6 py-2 rounded-lg font-bold w-full">CONFIRMER L'AJOUT</button>
+                </div>
+              )}
+
+              {/* LISTE DES PRODUITS */}
+              <div className="space-y-3">
+                {products.filter(p => p.title.toLowerCase().includes(searchTerm.toLowerCase())).map(product => (
+                  <div key={product.id} className={`bg-white p-4 rounded-xl flex flex-col md:flex-row items-center gap-4 shadow-sm border transition ${product.stock === 0 ? 'border-red-200 bg-red-50' : 'border-gray-100'}`}>
+                     
+                     {/* Image & Nom */}
+                     <div className="flex items-center gap-4 flex-1 w-full">
+                        <div className="w-12 h-12 bg-gray-100 rounded-lg overflow-hidden shrink-0">
+                           <img src={product.images[0]} alt="" className="object-cover w-full h-full"/>
                         </div>
-                      </td>
-                      <td className="p-4 text-blue-600 font-bold">{p.price.toLocaleString()}</td>
-                      <td className="p-4 text-center">
-                         <div className="flex justify-center items-center gap-2">
-                            <button onClick={() => updateStock(p.id, p.stock - 1)} className="w-6 h-6 bg-gray-200 rounded font-bold">-</button>
-                            <span className={`font-bold w-8 text-center ${p.stock===0?'text-red-500':''}`}>{p.stock}</span>
-                            <button onClick={() => updateStock(p.id, p.stock + 1)} className="w-6 h-6 bg-gray-200 rounded font-bold">+</button>
-                         </div>
-                      </td>
-                      <td className="p-4 text-right flex justify-end gap-2">
-                         {p.stock > 0 && <button onClick={() => setOutOfStock(p.id)} className="text-orange-500 bg-orange-50 p-1.5 rounded"><Zap size={16}/></button>}
-                         <button onClick={() => deleteProduct(p.id)} className="text-red-500 bg-red-50 p-1.5 rounded"><Trash2 size={16}/></button>
-                      </td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
+                        <div className="flex-1">
+                           <input 
+                             type="text" 
+                             className="font-bold text-[#0A1128] bg-transparent border-b border-transparent hover:border-gray-300 focus:border-blue-500 outline-none w-full"
+                             value={product.title}
+                             onChange={(e) => handleUpdateProduct(product.id, 'title', e.target.value)}
+                           />
+                           <div className="flex items-center gap-2 mt-1">
+                             <input 
+                                type="number" 
+                                className="text-xs text-gray-500 bg-transparent w-20 border-b border-transparent hover:border-gray-300 outline-none"
+                                value={product.price}
+                                onChange={(e) => handleUpdateProduct(product.id, 'price', Number(e.target.value))}
+                             />
+                             <span className="text-xs text-gray-400">FCFA</span>
+                           </div>
+                        </div>
+                     </div>
+
+                     {/* Stock & Actions */}
+                     <div className="flex items-center gap-6 justify-between w-full md:w-auto">
+                        <div className="flex items-center gap-2 bg-gray-50 px-3 py-1 rounded-lg">
+                           <span className={`text-xs font-bold uppercase ${product.stock === 0 ? 'text-red-500' : 'text-gray-400'}`}>
+                             {product.stock === 0 ? 'RUPTURE' : 'STOCK:'}
+                           </span>
+                           <input 
+                              type="number" 
+                              className={`w-12 bg-transparent font-bold text-center outline-none ${product.stock === 0 ? 'text-red-600' : 'text-[#0A1128]'}`}
+                              value={product.stock}
+                              onChange={(e) => handleUpdateProduct(product.id, 'stock', Number(e.target.value))}
+                           />
+                        </div>
+                        <button onClick={() => handleDeleteProduct(product.id)} className="text-gray-300 hover:text-red-500 hover:bg-red-50 p-2 rounded-lg transition" title="Supprimer">
+                          <Trash2 size={20} />
+                        </button>
+                     </div>
+                  </div>
+                ))}
+              </div>
             </div>
-          </div>
+          )}
 
-          {/* 2. FORMULAIRE AJOUT */}
-          <div className="bg-white rounded-2xl shadow-sm border border-gray-200 p-6">
-            <h3 className="font-bold text-lg text-gray-800 mb-6 flex items-center gap-2">
-                <Plus className="bg-blue-600 text-white rounded-full p-0.5" size={20}/> Ajouter un produit
-            </h3>
-            <form onSubmit={handleAddProduct} className="grid md:grid-cols-2 gap-6">
-              <div className="md:col-span-2 flex justify-center">
-                  <label className="cursor-pointer group relative w-full max-w-md h-32 rounded-2xl border-2 border-dashed border-gray-300 hover:border-blue-500 bg-gray-50 flex flex-col items-center justify-center transition overflow-hidden">
-                     {newImage ? <Image src={newImage} alt="Preview" fill className="object-cover opacity-80" /> : <div className="flex flex-col items-center"><Upload className="text-blue-600 mb-2" /><span className="font-bold text-gray-500 text-sm">Ajouter une photo</span></div>}
-                     <input type="file" accept="image/*" onChange={handleImageUpload} className="hidden" />
-                  </label>
-              </div>
-              <div className="space-y-4">
-                  <input name="title" placeholder="Nom du produit" required className="w-full p-3 bg-gray-50 rounded-xl border font-bold" />
-                  <input name="price" type="number" placeholder="Prix (FCFA)" required className="w-full p-3 bg-gray-50 rounded-xl border font-bold" />
-              </div>
-              <div className="space-y-4">
-                  <select name="category" className="w-full p-3 bg-gray-50 rounded-xl border font-bold"><option value="hoodie">Hoodie</option><option value="t-shirt">T-Shirt</option><option value="accessoire">Accessoire</option></select>
-                  <input name="stock" type="number" placeholder="Stock Initial" required className="w-full p-3 bg-gray-50 rounded-xl border font-bold" />
-              </div>
-
-              {/* CHAMP DESCRIPTION FACULTATIF */}
-              <div className="md:col-span-2">
-                 <div className="relative">
-                    <AlignLeft className="absolute top-3 left-3 text-gray-400" size={18} />
-                    <textarea 
-                        name="desc" 
-                        placeholder="Description du produit (Facultatif - Par défaut: 'Nouvelle pièce exclusive Blue Energy')" 
-                        className="w-full p-3 pl-10 bg-gray-50 rounded-xl border font-medium h-24 resize-none focus:ring-2 ring-blue-500 outline-none"
-                    ></textarea>
-                 </div>
+          {/* --- ONGLET PROMOS --- */}
+          {activeTab === 'promos' && (
+            <div className="space-y-6">
+              <div className="bg-white p-6 rounded-xl shadow-sm border border-gray-100">
+                <h3 className="font-bold text-lg mb-4 flex items-center gap-2"><Plus size={20} className="text-blue-600"/> Créer un code promo</h3>
+                <div className="flex gap-4">
+                  <input 
+                    type="text" 
+                    placeholder="Code (ex: VIP2026)" 
+                    className="flex-1 border-2 border-gray-200 rounded-lg p-3 font-bold uppercase focus:border-blue-600 outline-none"
+                    value={newCode}
+                    onChange={(e) => setNewCode(e.target.value)}
+                  />
+                  <div className="flex items-center gap-2 bg-gray-100 rounded-lg px-4">
+                     <span className="font-bold text-gray-500">-</span>
+                     <input type="number" className="w-12 bg-transparent font-bold outline-none text-center" value={newPercent} onChange={(e) => setNewPercent(Number(e.target.value))} />
+                     <span className="font-bold text-gray-500">%</span>
+                  </div>
+                  <button onClick={handleAddPromo} className="bg-[#0A1128] text-white px-6 rounded-lg font-bold hover:bg-blue-900 transition">AJOUTER</button>
+                </div>
               </div>
 
-              <button type="submit" className="md:col-span-2 w-full bg-[#0A1128] text-white font-bold py-4 rounded-xl hover:bg-blue-900 transition">Créer le produit</button>
-            </form>
-          </div>
-
+              <div className="space-y-2">
+                <h3 className="font-bold text-gray-400 text-sm uppercase ml-1">Codes actifs ({promoCodes.length})</h3>
+                {promoCodes.map((promo, idx) => (
+                  <div key={idx} className="bg-white p-4 rounded-xl flex justify-between items-center shadow-sm border border-gray-100">
+                    <div className="flex items-center gap-4">
+                      <div className="bg-blue-100 text-blue-800 p-2 rounded-lg"><Tag size={20}/></div>
+                      <div>
+                        <span className="block font-black text-lg">{promo.code}</span>
+                        <span className="text-sm text-green-600 font-bold">-{promo.percent}%</span>
+                      </div>
+                    </div>
+                    <button onClick={() => handleDeletePromo(promo.code)} className="text-gray-300 hover:text-red-500 hover:bg-red-50 p-2 rounded-full transition">
+                      <Trash2 size={20} />
+                    </button>
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
+        </div>
+        
+        {/* FOOTER */}
+        <div className="p-4 bg-white border-t flex justify-end gap-4">
+           <button onClick={onClose} className="bg-gray-100 text-[#0A1128] px-6 py-3 rounded-xl font-bold hover:bg-gray-200 transition flex items-center gap-2">
+             <Save size={18} /> FERMER
+           </button>
         </div>
       </div>
     </div>

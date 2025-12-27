@@ -1,22 +1,15 @@
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import "./globals.css";
+import Navbar from "../components/Navbar";
+import { CartProvider } from "../context/CartContext";
+import { PromoProvider } from "../context/PromoContext"; // <--- NOUVEAU
 
 const inter = Inter({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
-  title: "Blue Energy | Elevate Your Standard",
-  description: "Découvrez la nouvelle collection Blue Energy 2026. Streetwear premium conçu à Yaoundé.",
-  keywords: ["Blue Energy", "Streetwear Cameroun", "Mode Yaoundé", "Vêtements luxe", "237"],
-  icons: {
-    icon: "/logo.jpeg", 
-    apple: "/logo.jpeg",
-  },
-  openGraph: {
-    title: "Blue Energy - Collection 2026",
-    description: "Le nouveau standard du streetwear au Cameroun.",
-    images: ["/logo.jpeg"],
-  },
+  title: "Blue Energy | Vision 2026",
+  description: "Streetwear Premium Designed in Cameroon.",
 };
 
 export default function RootLayout({
@@ -26,7 +19,16 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="fr">
-      <body className={inter.className}>{children}</body>
+      <body className={inter.className}>
+        <CartProvider>
+          <PromoProvider> {/* <--- ON ENTOURE ICI */}
+            <Navbar />
+            <main className="min-h-screen pt-16">
+              {children}
+            </main>
+          </PromoProvider>
+        </CartProvider>
+      </body>
     </html>
   );
 }

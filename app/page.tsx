@@ -3,24 +3,36 @@
 import React, { useState, useEffect } from 'react';
 import { 
   ShoppingBag, ArrowRight, Menu, X, Trash2, CheckCircle, 
-  Truck, CreditCard, Star, Plus, Lock 
+  Truck, CreditCard, Star, Plus, Lock, Tag 
 } from 'lucide-react';
 import Image from 'next/image';
 
 // IMPORTATIONS
-// Assure-toi que ces chemins existent bien chez toi. 
-// Si tu as renommé 'data' en 'donnees', modifie ici.
 import { Product, CartItem, INITIAL_PRODUCTS } from '../data/store';
 import ProductModal from '../components/ProductModal';
 import CheckoutForm from '../components/CheckoutForm';
 import AdminDashboard from '../components/AdminDashboard';
 import ChatBot from '../components/ChatBot';
 
+// Type pour les codes promo
+export type PromoCode = {
+  code: string;
+  percent: number;
+};
+
 export default function Home() {
   const [products, setProducts] = useState<Product[]>(INITIAL_PRODUCTS);
   const [cart, setCart] = useState<CartItem[]>([]);
   const [selectedCategory, setSelectedCategory] = useState<'all' | 'hoodie' | 't-shirt' | 'accessoire'>('all');
   
+  // États Promo
+  const [promoCodes, setPromoCodes] = useState<PromoCode[]>([
+    { code: "VISION2026", percent: 10 }
+  ]);
+  const [appliedPromo, setAppliedPromo] = useState<PromoCode | null>(null);
+  const [promoInput, setPromoInput] = useState("");
+  const [promoMessage, setPromoMessage] = useState("");
+
   // États UI
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isCartOpen, setIsCartOpen] = useState(false);
@@ -28,26 +40,54 @@ export default function Home() {
   const [isCheckoutOpen, setIsCheckoutOpen] = useState(false);
   const [isAdminOpen, setIsAdminOpen] = useState(false);
   const [isLoaded, setIsLoaded] = useState(false);
+  
+  // ÉTAT VUES (Initialisé à 0 en attendant le chargement réel)
   const [siteViews, setSiteViews] = useState(0);
 
   // --- SAUVEGARDE & LOGIQUE ---
   useEffect(() => {
+    // 1. Récupération des données locales (Produits, Panier, Promos)
     const savedProducts = localStorage.getItem('be-stock');
     const savedCart = localStorage.getItem('be-cart');
+    const savedPromos = localStorage.getItem('be-promos');
     
-    const savedViews = localStorage.getItem('be-views');
-    let currentViews = savedViews ? parseInt(savedViews) : 5420;
-    currentViews += 1;
-    localStorage.setItem('be-views', currentViews.toString());
-    setSiteViews(currentViews);
-
     if (savedProducts) setProducts(JSON.parse(savedProducts));
     if (savedCart) setCart(JSON.parse(savedCart));
+    if (savedPromos) setPromoCodes(JSON.parse(savedPromos));
+
+    // 2. COMPTEUR DE VUES "RÉEL" (Connecté au Cloud)
+    const fetchRealViews = async () => {
+      try {
+        // On vérifie si l'utilisateur a déjà visité le site durant cette session
+        // pour éviter de compter +1 à chaque fois qu'il rafraîchit la page.
+        const sessionKey = 'be_session_visited';
+        const hasVisited = sessionStorage.getItem(sessionKey);
+        
+        // Si c'est une nouvelle visite, on fait 'hit' (+1), sinon on fait 'get' (lire seulement)
+        const action = hasVisited ? 'get' : 'hit';
+        
+        // Namespace unique pour Blue Energy
+        const res = await fetch(`https://api.countapi.xyz/${action}/blueenergy237-vision/visits`);
+        const data = await res.json();
+        
+        setSiteViews(data.value);
+
+        if (!hasVisited) sessionStorage.setItem(sessionKey, 'true');
+      } catch (error) {
+        console.error("Erreur compteur:", error);
+        // Si l'API ne répond pas, on affiche un chiffre par défaut
+        setSiteViews(1); 
+      }
+    };
+
+    fetchRealViews();
     setIsLoaded(true);
   }, []);
 
+  // Sauvegardes automatiques
   useEffect(() => { if (isLoaded) localStorage.setItem('be-stock', JSON.stringify(products)); }, [products, isLoaded]);
   useEffect(() => { if (isLoaded) localStorage.setItem('be-cart', JSON.stringify(cart)); }, [cart, isLoaded]);
+  useEffect(() => { if (isLoaded) localStorage.setItem('be-promos', JSON.stringify(promoCodes)); }, [promoCodes, isLoaded]);
 
   // Logique Panier
   const filteredProducts = selectedCategory === 'all' ? products : products.filter(p => p.category === selectedCategory);
@@ -73,8 +113,23 @@ export default function Home() {
     setProducts(prev => prev.map(p => p.id === id ? { ...p, stock: Math.max(0, p.stock + change) } : p));
   };
 
-  const cartTotal = cart.reduce((total, item) => total + (item.price * item.quantity), 0);
+  // CALCULS TOTAUX AVEC PROMO
+  const cartSubTotal = cart.reduce((total, item) => total + (item.price * item.quantity), 0);
+  const discountAmount = appliedPromo ? (cartSubTotal * appliedPromo.percent) / 100 : 0;
+  const cartFinalTotal = cartSubTotal - discountAmount;
   const cartCount = cart.reduce((count, item) => count + item.quantity, 0);
+
+  const handleApplyPromo = () => {
+    if (!promoInput) return;
+    const found = promoCodes.find(p => p.code === promoInput.toUpperCase().trim());
+    if (found) {
+        setAppliedPromo(found);
+        setPromoMessage(`Code ${found.code} appliqué (-${found.percent}%)`);
+        setPromoInput("");
+    } else {
+        setPromoMessage("Code invalide ❌");
+    }
+  };
 
   if (!isLoaded) return <div className="min-h-screen bg-white flex items-center justify-center text-[#0A1128] font-bold animate-pulse">Chargement 2026...</div>;
 
@@ -82,31 +137,41 @@ export default function Home() {
     <div className="min-h-screen bg-white text-[#0A1128] font-sans selection:bg-blue-100 overflow-x-hidden pt-8"> 
       
       <ProductModal isOpen={!!selectedProduct} product={selectedProduct} onClose={() => setSelectedProduct(null)} onAddToCart={addToCart} />
-      <CheckoutForm isOpen={isCheckoutOpen} cart={cart} total={cartTotal} onClose={() => setIsCheckoutOpen(false)} onSuccess={() => { setCart([]); setIsCheckoutOpen(false); }} />
-      <AdminDashboard isOpen={isAdminOpen} onClose={() => setIsAdminOpen(false)} products={products} setProducts={setProducts} views={siteViews} />
       
-      {/* --- CHATBOT --- */}
+      <CheckoutForm 
+        isOpen={isCheckoutOpen} 
+        cart={cart} 
+        total={cartFinalTotal} 
+        onClose={() => setIsCheckoutOpen(false)} 
+        onSuccess={() => { setCart([]); setAppliedPromo(null); setIsCheckoutOpen(false); }} 
+      />
+
+      {/* DASHBOARD ADMIN : Reçoit maintenant les vraies vues */}
+      <AdminDashboard 
+        isOpen={isAdminOpen} 
+        onClose={() => setIsAdminOpen(false)} 
+        products={products} 
+        setProducts={setProducts} 
+        views={siteViews}
+        promoCodes={promoCodes}
+        setPromoCodes={setPromoCodes}
+      />
+      
       <ChatBot />
 
-      {/* --- TOP BAR DEFILANTE (INFO HEADER) --- */}
+      {/* TOP BAR */}
       <div className="fixed top-0 left-0 w-full h-8 bg-[#0A1128] text-white z-[60] flex items-center overflow-hidden border-b border-white/10">
           {/* @ts-ignore */}
           <marquee scrollamount="6" className="text-xs font-bold uppercase tracking-widest">
               <span className="mx-4">⚡ Profitez de 10% de réduction sur vos commandes de 10.000fr maximum</span>
               <span className="mx-4">•</span>
               <span className="mx-4">🚚 Livraison gratuite pour les commandes de plus de 20.000fr</span>
-              <span className="mx-4">•</span>
-              <span className="mx-4">🔒 Paiement sécurisé à la livraison</span>
-              <span className="mx-4">•</span>
-              <span className="mx-4">🌍 Expédition internationale disponible</span>
           </marquee>
       </div>
 
-      {/* --- NAVBAR --- */}
+      {/* NAVBAR */}
       <nav className="fixed w-full top-8 bg-white/90 backdrop-blur-md z-50 border-b border-gray-100 transition-all">
         <div className="max-w-7xl mx-auto px-4 h-20 flex items-center justify-between">
-          
-          {/* LOGO */}
           <div className="flex items-center gap-3 cursor-pointer group">
             <div className="relative w-10 h-10 shadow-md rounded-full overflow-hidden group-hover:scale-110 transition duration-300">
                <Image src="/logo.jpeg" alt="Logo" fill className="object-cover" />
@@ -145,6 +210,7 @@ export default function Home() {
                <h2 className="text-2xl font-black tracking-tight">VOTRE PANIER</h2>
                <button onClick={() => setIsCartOpen(false)} className="p-2 hover:bg-gray-100 rounded-full"><X /></button>
             </div>
+            
             <div className="flex-grow overflow-y-auto space-y-4 pr-2">
               {cart.length === 0 ? (
                 <div className="h-full flex flex-col items-center justify-center text-gray-400 gap-4"><ShoppingBag size={48} opacity={0.2} /><p>Votre panier est vide.</p><button onClick={() => setIsCartOpen(false)} className="text-blue-600 font-bold hover:underline">Continuer mes achats</button></div>
@@ -163,9 +229,42 @@ export default function Home() {
                 ))
               )}
             </div>
-            <div className="border-t pt-6 mt-4">
-               <div className="flex justify-between text-xl font-black mb-6"><span>Total</span><span>{cartTotal.toLocaleString()} FCFA</span></div>
-               <button onClick={() => { setIsCartOpen(false); setIsCheckoutOpen(true); }} disabled={cart.length === 0} className="w-full bg-[#0A1128] text-white py-4 rounded-xl font-bold hover:bg-blue-900 transition flex items-center justify-center gap-2 shadow-xl disabled:opacity-50">Passer la commande</button>
+
+            <div className="border-t pt-4 mt-4 bg-gray-50 -mx-8 px-8 pb-8">
+               <div className="mb-4">
+                  <label className="text-xs font-bold uppercase text-gray-500 mb-1 block">Code Promo</label>
+                  <div className="flex gap-2">
+                      <input 
+                        type="text" 
+                        value={promoInput}
+                        onChange={(e) => setPromoInput(e.target.value)}
+                        placeholder="Ex: VISION2026"
+                        className="flex-1 border p-2 rounded-lg text-sm uppercase font-bold focus:outline-none focus:border-blue-600"
+                        disabled={!!appliedPromo}
+                      />
+                      {!appliedPromo ? (
+                        <button onClick={handleApplyPromo} className="bg-black text-white px-3 py-2 rounded-lg font-bold text-xs">OK</button>
+                      ) : (
+                        <button onClick={() => { setAppliedPromo(null); setPromoMessage(""); setPromoInput(""); }} className="bg-red-500 text-white px-3 py-2 rounded-lg font-bold text-xs">X</button>
+                      )}
+                  </div>
+                  {promoMessage && <p className="text-xs text-blue-600 mt-1 font-medium">{promoMessage}</p>}
+               </div>
+
+               <div className="space-y-2 mb-4">
+                   <div className="flex justify-between text-sm text-gray-500"><span>Sous-total</span><span>{cartSubTotal.toLocaleString()} FCFA</span></div>
+                   {appliedPromo && (
+                       <div className="flex justify-between text-sm text-green-600 font-bold">
+                           <span>Réduction ({appliedPromo.code})</span>
+                           <span>- {discountAmount.toLocaleString()} FCFA</span>
+                       </div>
+                   )}
+                   <div className="flex justify-between text-xl font-black text-[#0A1128]"><span>Total</span><span>{cartFinalTotal.toLocaleString()} FCFA</span></div>
+               </div>
+
+               <button onClick={() => { setIsCartOpen(false); setIsCheckoutOpen(true); }} disabled={cart.length === 0} className="w-full bg-[#0A1128] text-white py-4 rounded-xl font-bold hover:bg-blue-900 transition flex items-center justify-center gap-2 shadow-xl disabled:opacity-50">
+                 Passer la commande
+               </button>
             </div>
           </div>
         </div>
@@ -197,14 +296,6 @@ export default function Home() {
              <p className="text-gray-500 mb-8 text-lg leading-relaxed">Nous avons abandonné le superflu pour revenir à l'essentiel. Des coupes parfaites, des matières nobles et ce bleu profond qui nous caractérise.</p>
              <div className="space-y-4">{["Coton premium certifié (220 GSM)", "Finition broderie haute définition", "Design universel & intemporel"].map((item, i) => (<div key={i} className="flex items-center gap-4 p-3 rounded-xl hover:bg-gray-50 transition border border-transparent hover:border-gray-100"><CheckCircle className="text-blue-600 shrink-0" size={20}/> <span className="font-bold text-gray-800">{item}</span></div>))}</div>
            </div>
-         </div>
-      </section>
-
-      <section className="py-12 border-y border-gray-100 bg-gray-50/50">
-         <div className="max-w-6xl mx-auto px-4 grid grid-cols-1 md:grid-cols-3 gap-8 text-center md:text-left">
-              <div className="flex items-center gap-4 justify-center md:justify-start"><div className="bg-blue-100 p-3 rounded-2xl text-blue-800"><Truck size={24}/></div><div><h3 className="font-bold">Livraison Rapide</h3><p className="text-sm text-gray-500">Expédition 24h/48h</p></div></div>
-              <div className="flex items-center gap-4 justify-center md:justify-start"><div className="bg-blue-100 p-3 rounded-2xl text-blue-800"><CheckCircle size={24}/></div><div><h3 className="font-bold">Qualité Premium</h3><p className="text-sm text-gray-500">Satisfait ou remboursé</p></div></div>
-              <div className="flex items-center gap-4 justify-center md:justify-start"><div className="bg-blue-100 p-3 rounded-2xl text-blue-800"><CreditCard size={24}/></div><div><h3 className="font-bold">Paiement Sécurisé</h3><p className="text-sm text-gray-500">Paiement à la livraison</p></div></div>
          </div>
       </section>
 
