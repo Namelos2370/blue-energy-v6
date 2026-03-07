@@ -23,7 +23,6 @@ export type PromoCode = {
 export default function Home() {
   const [products, setProducts] = useState<Product[]>(INITIAL_PRODUCTS);
   const [cart, setCart] = useState<CartItem[]>([]);
-  // MISE À JOUR : Ajout de 'polo' et 'jogging' dans les types de catégories
   const [selectedCategory, setSelectedCategory] = useState<'all' | 'hoodie' | 't-shirt' | 'polo' | 'jogging' | 'accessoire'>('all');
   
   // États Promo
@@ -288,4 +287,47 @@ export default function Home() {
         <div className="flex justify-center gap-3 mb-12 overflow-x-auto pb-4 scrollbar-hide">
           {/* MISE À JOUR : Ajout de 'polo' et 'jogging' dans la barre de filtre */}
           {['all', 'hoodie', 't-shirt', 'polo', 'jogging', 'accessoire'].map((cat) => (
-            <button key={cat} onClick={() => setSelectedCategory
+            <button key={cat} onClick={() => setSelectedCategory(cat as any)} className={`px-6 py-2 rounded-full font-bold uppercase text-xs tracking-wider transition whitespace-nowrap border ${selectedCategory === cat ? 'bg-[#0A1128] text-white border-[#0A1128]' : 'bg-white text-gray-500 border-gray-200 hover:border-gray-400'}`}>{cat === 'all' ? 'Tout voir' : cat + 's'}</button>
+          ))}
+        </div>
+        <div className="grid md:grid-cols-3 gap-10">
+          {filteredProducts.map((product) => (
+            <div key={product.id} onClick={() => setSelectedProduct(product)} className="group cursor-pointer">
+              <div className="relative aspect-[4/5] bg-gray-100 rounded-[2rem] overflow-hidden mb-4 shadow-sm group-hover:shadow-2xl transition duration-500 border border-gray-100">
+                <div className="absolute top-4 left-4 z-10 bg-white/90 backdrop-blur px-3 py-1 text-xs font-bold rounded-full uppercase text-[#0A1128] shadow-sm">{product.tag}</div>
+                {product.stock === 0 && <div className="absolute top-4 right-4 z-10 bg-red-600 text-white px-3 py-1 text-xs font-bold rounded-full uppercase">Épuisé</div>}
+                <Image src={product.images[0]} alt={product.title} fill className={`object-cover transition duration-700 ${product.stock === 0 ? 'grayscale' : 'group-hover:scale-105'}`} />
+                <div className="absolute inset-0 bg-black/10 opacity-0 group-hover:opacity-100 transition flex items-end justify-center p-6"><span className="w-full bg-white text-[#0A1128] py-3 rounded-xl font-bold shadow-xl transform translate-y-4 group-hover:translate-y-0 transition flex items-center justify-center gap-2"><Plus size={18} /> Voir détails</span></div>
+              </div>
+              <div className="px-2">
+                 <div className="flex justify-between items-start mb-1"><h3 className="font-bold text-lg leading-tight">{product.title}</h3><p className="text-blue-700 font-bold">{product.price.toLocaleString()} FCFA</p></div>
+                 <div className="flex gap-1 mb-2">{[1,2,3,4,5].map(s => <Star key={s} size={12} className="fill-yellow-400 text-yellow-400"/>)}<span className="text-xs text-gray-400 ml-1">(4.9)</span></div>
+              </div>
+            </div>
+          ))}
+        </div>
+      </section>
+
+      <footer className="py-16 border-t border-gray-100 text-center bg-white relative">
+        <div className="relative w-12 h-12 mx-auto mb-6 shadow-xl rounded-full overflow-hidden">
+            <Image src="/logo.jpeg" alt="Logo" fill className="object-cover" />
+        </div>
+        <p className="font-black text-2xl tracking-tighter mb-6 text-[#0A1128]">BLUE ENERGY</p>
+        
+        <div className="flex justify-center gap-8 mb-8 text-sm font-bold text-gray-400 uppercase tracking-widest flex-wrap px-4">
+            <a href="https://www.instagram.com/blueenergy237?igsh=ODlqdnkxb255YnA4&utm_source=qr" target="_blank" className="hover:text-[#0A1128] transition">Instagram</a>
+            <a href="https://www.tiktok.com/@bluenergy237?_r=1&_t=ZN-92D2KTJMpQU" target="_blank" className="hover:text-[#0A1128] transition">TikTok</a>
+            <a href="https://whatsapp.com/channel/0029VaR2SDvCxoAunCACDW1E" target="_blank" className="hover:text-[#0A1128] transition">Chaîne WhatsApp</a>
+        </div>
+        
+        <div className="text-gray-400 text-sm space-y-2">
+            <p>© 2026 Blue Energy. All rights reserved.</p>
+            <p className="text-xs opacity-60">Designed in Yaoundé, Cameroon.</p>
+        </div>
+        <div className="absolute bottom-4 right-4 opacity-50 hover:opacity-100 transition z-10">
+          <button onClick={() => setIsAdminOpen(true)} className="flex items-center gap-2 text-xs font-bold text-gray-300 hover:text-[#0A1128]"><Lock size={12} /> Admin</button>
+        </div>
+      </footer>
+    </div>
+  );
+}
