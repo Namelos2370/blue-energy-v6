@@ -320,19 +320,4 @@ export default function Home() {
         <p className="font-black text-2xl tracking-tighter mb-6 text-[#0A1128]">BLUE ENERGY</p>
         
         <div className="flex justify-center gap-8 mb-8 text-sm font-bold text-gray-400 uppercase tracking-widest flex-wrap px-4">
-            <a href="https://www.instagram.com/blueenergy237?igsh=ODlqdnkxb255YnA4&utm_source=qr" target="_blank" className="hover:text-[#0A1128] transition">Instagram</a>
-            <a href="https://www.tiktok.com/@bluenergy237?_r=1&_t=ZN-92D2KTJMpQU" target="_blank" className="hover:text-[#0A1128] transition">TikTok</a>
-            <a href="https://whatsapp.com/channel/0029VaR2SDvCxoAunCACDW1E" target="_blank" className="hover:text-[#0A1128] transition">Chaîne WhatsApp</a>
-        </div>
-        
-        <div className="text-gray-400 text-sm space-y-2">
-            <p>© 2026 Blue Energy. All rights reserved.</p>
-            <p className="text-xs opacity-60">Designed in Yaoundé, Cameroon.</p>
-        </div>
-        <div className="absolute bottom-4 right-4 opacity-50 hover:opacity-100 transition z-10">
-          <button onClick={() => setIsAdminOpen(true)} className="flex items-center gap-2 text-xs font-bold text-gray-300 hover:text-[#0A1128]"><Lock size={12} /> Admin</button>
-        </div>
-      </footer>
-    </div>
-  );
-}
+            <a href="
