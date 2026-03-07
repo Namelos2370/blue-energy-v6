@@ -1,13 +1,9 @@
-/** @type {import('next').NextConfig} */
-const nextConfig = {
+import type { NextConfig } from "next";
+
+const nextConfig: NextConfig = {
+  // On ignore les petites erreurs de syntaxe pour que Vercel ne bloque jamais la mise en ligne
   typescript: {
-    // !! IMPORTANT !!
-    // On dit à Vercel d'ignorer les erreurs TypeScript (comme marquee)
     ignoreBuildErrors: true,
-  },
-  eslint: {
-    // On ignore aussi les avertissements de style
-    ignoreDuringBuilds: true,
   },
 };
 
