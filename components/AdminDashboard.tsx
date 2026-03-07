@@ -1,6 +1,6 @@
 "use client";
 import React, { useState } from 'react';
-import { X, Save, Eye, Package, Tag, Trash2, Plus, Lock, Search, Edit2 } from 'lucide-react';
+import { X, Save, Eye, Package, Tag, Trash2, Plus, Lock, Search, Edit2, Upload } from 'lucide-react';
 import { Product } from '../data/store';
 
 // On définit le type PromoCode ici pour être sûr
@@ -55,6 +55,19 @@ export default function AdminDashboard({ isOpen, onClose, products, setProducts,
     }
   };
 
+  // 📸 GESTION UPLOAD IMAGE LOCAL
+  const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        // Convertit l'image en format lisible par le navigateur et la sauvegarde dans le produit
+        setNewProduct({...newProduct, images: [reader.result as string]});
+      };
+      reader.readAsDataURL(file);
+    }
+  };
+
   const handleAddProduct = () => {
     if (!newProduct.title || !newProduct.price) return alert("Remplissez au moins le nom et le prix");
     
@@ -65,13 +78,17 @@ export default function AdminDashboard({ isOpen, onClose, products, setProducts,
       stock: Number(newProduct.stock),
       category: newProduct.category as any,
       tag: newProduct.tag || "NOUVEAU",
-      images: ["/images/hoodie.png"], // Image par défaut si vide
-      description: "Description par défaut"
+      images: newProduct.images && newProduct.images[0] !== "/images/placeholder.png" 
+              ? newProduct.images 
+              : ["/images/hoodie.png"], // Image uploadée ou image par défaut
+      description: "Collection Vision 2026. Coupe premium.",
+      sizes: ["S", "M", "L", "XL"],
+      colors: ["Standard"]
     };
 
     setProducts(prev => [productToAdd, ...prev]);
     setShowAddForm(false);
-    setNewProduct({ title: "", price: 0, stock: 10, category: "t-shirt", tag: "NOUVEAU" });
+    setNewProduct({ title: "", price: 0, stock: 10, category: "t-shirt", tag: "NOUVEAU", images: ["/images/placeholder.png"] });
   };
 
   // 🏷️ GESTION PROMOS
@@ -165,21 +182,48 @@ export default function AdminDashboard({ isOpen, onClose, products, setProducts,
                 </button>
               </div>
 
-              {/* FORMULAIRE D'AJOUT */}
+              {/* FORMULAIRE D'AJOUT CORRIGÉ */}
               {showAddForm && (
                 <div className="bg-blue-50 border border-blue-100 p-6 rounded-xl animate-in slide-in-from-top-4">
                   <h3 className="font-bold text-blue-900 mb-4">Nouveau Produit</h3>
+                  
+                  {/* Ligne 1: Infos basiques */}
                   <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-4">
                     <input type="text" placeholder="Nom du produit" className="p-2 rounded border" value={newProduct.title} onChange={e => setNewProduct({...newProduct, title: e.target.value})} />
                     <input type="number" placeholder="Prix (FCFA)" className="p-2 rounded border" value={newProduct.price || ''} onChange={e => setNewProduct({...newProduct, price: Number(e.target.value)})} />
                     <input type="number" placeholder="Stock" className="p-2 rounded border" value={newProduct.stock} onChange={e => setNewProduct({...newProduct, stock: Number(e.target.value)})} />
-                    <select className="p-2 rounded border" value={newProduct.category} onChange={e => setNewProduct({...newProduct, category: e.target.value as any})}>
+                    <select className="p-2 rounded border font-bold" value={newProduct.category} onChange={e => setNewProduct({...newProduct, category: e.target.value as any})}>
                       <option value="t-shirt">T-Shirt</option>
                       <option value="hoodie">Hoodie</option>
-                      <option value="accessoire">Accessoire</option>
+                      <option value="polo">Polo</option>
+                      <option value="jogging">Jogging</option>
+                      <option value="accessoire">Accessoire / Casquette</option>
                     </select>
                   </div>
-                  <button onClick={handleAddProduct} className="bg-blue-600 text-white px-6 py-2 rounded-lg font-bold w-full">CONFIRMER L'AJOUT</button>
+
+                  {/* Ligne 2: Image Upload */}
+                  <div className="mb-4 bg-white p-4 rounded-lg border border-gray-200">
+                     <label className="block text-sm font-bold text-gray-600 mb-2 flex items-center gap-2">
+                       <Upload size={16} /> Photo du produit
+                     </label>
+                     <div className="flex items-center gap-4">
+                       <input 
+                         type="file" 
+                         accept="image/*" 
+                         onChange={handleImageUpload} 
+                         className="p-2 rounded border w-full md:w-2/3 text-sm cursor-pointer file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-bold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100" 
+                       />
+                       {newProduct.images && newProduct.images[0] !== "/images/placeholder.png" && (
+                          <div className="w-16 h-16 rounded-lg overflow-hidden border-2 border-blue-200 shrink-0">
+                            <img src={newProduct.images[0]} alt="preview" className="w-full h-full object-cover" />
+                          </div>
+                       )}
+                     </div>
+                  </div>
+
+                  <button onClick={handleAddProduct} className="bg-blue-600 text-white px-6 py-3 rounded-lg font-bold w-full hover:bg-blue-700 transition">
+                    CONFIRMER L'AJOUT DU PRODUIT
+                  </button>
                 </div>
               )}
 
@@ -190,7 +234,7 @@ export default function AdminDashboard({ isOpen, onClose, products, setProducts,
                      
                      {/* Image & Nom */}
                      <div className="flex items-center gap-4 flex-1 w-full">
-                        <div className="w-12 h-12 bg-gray-100 rounded-lg overflow-hidden shrink-0">
+                        <div className="w-12 h-12 bg-gray-100 rounded-lg overflow-hidden shrink-0 border border-gray-200">
                            <img src={product.images[0]} alt="" className="object-cover w-full h-full"/>
                         </div>
                         <div className="flex-1">
