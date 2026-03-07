@@ -147,7 +147,6 @@ export default function Home() {
       
       <ChatBot />
 
-      {/* TOP BANNER SANS MARQUEE */}
       <div className="fixed top-0 left-0 w-full h-8 bg-[#0A1128] text-white z-[60] flex items-center justify-center overflow-hidden border-b border-white/10 px-4">
           <div className="text-xs font-bold uppercase tracking-widest text-center">
               <span className="hidden md:inline">⚡ Profitez de 10% de réduction sur vos commandes de 10.000fr maximum</span>
@@ -263,7 +262,6 @@ export default function Home() {
          <div className="flex justify-center animate-in fade-in slide-in-from-bottom-10 duration-1000 delay-300"><a href="#collection" className="bg-[#0A1128] text-white px-8 py-3 rounded-full font-bold hover:bg-blue-900 transition flex items-center gap-2 shadow-xl hover:-translate-y-1">Découvrir le Drop 2026 <ArrowRight size={18} /></a></div>
       </section>
 
-      {/* TEXTE DÉFILANT REMPLACÉ PAR UNE BANNIÈRE PROPRE SANS MARQUEE */}
       <div className="w-full bg-[#0A1128] text-white py-4 border-y border-blue-900 flex justify-center">
         <div className="flex flex-wrap gap-4 md:gap-12 justify-center items-center font-bold tracking-[0.2em] uppercase text-xs md:text-sm px-4">
            <span className="text-gray-300">Blue Energy</span>
@@ -320,4 +318,19 @@ export default function Home() {
         <p className="font-black text-2xl tracking-tighter mb-6 text-[#0A1128]">BLUE ENERGY</p>
         
         <div className="flex justify-center gap-8 mb-8 text-sm font-bold text-gray-400 uppercase tracking-widest flex-wrap px-4">
-            <a href="
+            <a href="https://www.instagram.com/blueenergy237?igsh=ODlqdnkxb255YnA4&utm_source=qr" target="_blank" className="hover:text-[#0A1128] transition">Instagram</a>
+            <a href="https://www.tiktok.com/@bluenergy237?_r=1&_t=ZN-92D2KTJMpQU" target="_blank" className="hover:text-[#0A1128] transition">TikTok</a>
+            <a href="https://whatsapp.com/channel/0029VaR2SDvCxoAunCACDW1E" target="_blank" className="hover:text-[#0A1128] transition">Chaîne WhatsApp</a>
+        </div>
+        
+        <div className="text-gray-400 text-sm space-y-2">
+            <p>© 2026 Blue Energy. All rights reserved.</p>
+            <p className="text-xs opacity-60">Designed in Yaoundé, Cameroon.</p>
+        </div>
+        <div className="absolute bottom-4 right-4 opacity-50 hover:opacity-100 transition z-10">
+          <button onClick={() => setIsAdminOpen(true)} className="flex items-center gap-2 text-xs font-bold text-gray-300 hover:text-[#0A1128]"><Lock size={12} /> Admin</button>
+        </div>
+      </footer>
+    </div>
+  );
+}
