@@ -54,15 +54,24 @@ export const INITIAL_PRODUCTS: Product[] = [
   },
   {
     id: 3,
-    title: "Emblem Cap",
+    title: "Casquette Blue Energy",
     price: 5000,
     tag: "Accessoire",
-    desc: "Casquette en twill de coton, broderie 3D et boucle métal ajustable.",
+    desc: "Casquette en coton épais, visière courbée avec surpiqûres, œillets de ventilation, fermeture ajustable et broderie Blue Energy en relief.",
     category: 'accessoire',
-    images: ["/images/cap.png"],
-    stock: 5,
+    images: [
+      "/images/casquette-navy.jpg",
+      "/images/casquette-bordeaux.jpg",
+      "/images/casquette-kaki.jpg",
+      "/images/casquette-broderie-navy.jpg",
+      "/images/casquette-broderie-bordeaux.jpg",
+      "/images/casquette-matiere-navy.jpg",
+      "/images/casquette-visiere-bordeaux.jpg"
+    ],
+    stock: 15,
     sizes: ["Unique"],
-    colors: ["Navy", "Black"]
+    colors: ["Navy", "Bordeaux", "Kaki"],
+    colorImages: { "Navy": 0, "Bordeaux": 1, "Kaki": 2 }
   },
   {
     id: 4,
