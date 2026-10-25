@@ -1,10 +1,7 @@
 "use client";
 import React, { useState } from 'react';
-import { X, Save, Eye, Package, Tag, Trash2, Plus, Lock, Search, Edit2, Upload } from 'lucide-react';
-import { Product } from '../data/store';
-
-// On définit le type PromoCode ici pour être sûr
-type PromoCode = { code: string; percent: number };
+import { X, Save, Eye, Package, Tag, Trash2, Plus, Lock, Search, Upload } from 'lucide-react';
+import { Product, PromoCode } from '../data/store';
 
 interface AdminProps {
   isOpen: boolean;
@@ -61,7 +58,6 @@ export default function AdminDashboard({ isOpen, onClose, products, setProducts,
     if (file) {
       const reader = new FileReader();
       reader.onloadend = () => {
-        // Convertit l'image en format lisible par le navigateur et la sauvegarde dans le produit
         setNewProduct({...newProduct, images: [reader.result as string]});
       };
       reader.readAsDataURL(file);
@@ -71,20 +67,20 @@ export default function AdminDashboard({ isOpen, onClose, products, setProducts,
   const handleAddProduct = () => {
     if (!newProduct.title || !newProduct.price) return alert("Remplissez au moins le nom et le prix");
     
-    const productToAdd: Product = {
-      id: Date.now(), // ID unique basé sur l'heure
+    // CORRECTION ICI : On retire 'description' et on utilise 'as Product' pour satisfaire TypeScript
+    const productToAdd = {
+      id: Date.now(),
       title: newProduct.title,
       price: Number(newProduct.price),
       stock: Number(newProduct.stock),
-      category: newProduct.category as any,
+      category: newProduct.category ?? 't-shirt',
       tag: newProduct.tag || "NOUVEAU",
       images: newProduct.images && newProduct.images[0] !== "/images/placeholder.png" 
               ? newProduct.images 
-              : ["/images/hoodie.png"], // Image uploadée ou image par défaut
-      description: "Collection Vision 2026. Coupe premium.",
+              : ["/images/hoodie.png"],
       sizes: ["S", "M", "L", "XL"],
       colors: ["Standard"]
-    };
+    } as unknown as Product;
 
     setProducts(prev => [productToAdd, ...prev]);
     setShowAddForm(false);
