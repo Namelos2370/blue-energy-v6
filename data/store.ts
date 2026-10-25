@@ -62,11 +62,7 @@ export const INITIAL_PRODUCTS: Product[] = [
     images: [
       "/images/casquette-navy.jpg",
       "/images/casquette-bordeaux.jpg",
-      "/images/casquette-kaki.jpg",
-      "/images/casquette-broderie-navy.jpg",
-      "/images/casquette-broderie-bordeaux.jpg",
-      "/images/casquette-matiere-navy.jpg",
-      "/images/casquette-visiere-bordeaux.jpg"
+      "/images/casquette-kaki.jpg"
     ],
     stock: 15,
     sizes: ["Unique"],
