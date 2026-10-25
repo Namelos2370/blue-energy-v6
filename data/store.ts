@@ -74,17 +74,5 @@ export const INITIAL_PRODUCTS: Product[] = [
     stock: 10,
     sizes: ["M", "L", "XL", "XXL"],
     colors: ["Bleu ciel"]
-  },
-  {
-    id: 5,
-    title: "T-shirt Signature",
-    price: 6500,
-    tag: "Nouveau",
-    desc: "T-shirt oversize en coton épais, coupe ample et confortable, broderie Blue Energy sur la poitrine.",
-    category: 't-shirt',
-    images: ["/images/tshirt.jpg"],
-    stock: 20,
-    sizes: ["S", "M", "L", "XL"],
-    colors: ["Noir", "Blanc"]
   }
 ];
