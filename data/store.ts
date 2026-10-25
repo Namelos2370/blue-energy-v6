@@ -17,6 +17,7 @@ export type Product = {
     stock: number;
     sizes: string[];  // ex: ['S', 'M', 'L']
     colors: string[]; // ex: ['Navy', 'Black']
+    colorImages?: Record<string, number>; // couleur -> index de la photo à afficher
   };
   
   export type CartItem = Product & { 
@@ -74,5 +75,18 @@ export const INITIAL_PRODUCTS: Product[] = [
     stock: 10,
     sizes: ["M", "L", "XL", "XXL"],
     colors: ["Bleu ciel"]
+  },
+  {
+    id: 5,
+    title: "Polo Manches Longues",
+    price: 7000,
+    tag: "Nouveau",
+    desc: "Polo à manches longues : col chemise sur encolure en V, manches rayées et broderie Blue Energy. Une pièce habillée et confortable, disponible en trois couleurs.",
+    category: 'polo',
+    images: ["/images/polo-ml-navy.jpg", "/images/polo-ml-bordeaux.jpg", "/images/polo-ml-kaki.jpg"],
+    stock: 10,
+    sizes: ["M", "L", "XL", "XXL"],
+    colors: ["Navy", "Bordeaux", "Kaki"],
+    colorImages: { "Navy": 0, "Bordeaux": 1, "Kaki": 2 }
   }
 ];
