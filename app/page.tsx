@@ -40,7 +40,7 @@ export default function Home() {
 
   // --- SAUVEGARDE & LOGIQUE ---
   useEffect(() => {
-    const savedProducts = localStorage.getItem('be-stock');
+    const savedProducts = localStorage.getItem('be-stock-v2');
     const savedCart = localStorage.getItem('be-cart');
     const savedPromos = localStorage.getItem('be-promos');
     
@@ -70,7 +70,7 @@ export default function Home() {
     setIsLoaded(true);
   }, []);
 
-  useEffect(() => { if (isLoaded) localStorage.setItem('be-stock', JSON.stringify(products)); }, [products, isLoaded]);
+  useEffect(() => { if (isLoaded) localStorage.setItem('be-stock-v2', JSON.stringify(products)); }, [products, isLoaded]);
   useEffect(() => { if (isLoaded) localStorage.setItem('be-cart', JSON.stringify(cart)); }, [cart, isLoaded]);
   useEffect(() => { if (isLoaded) localStorage.setItem('be-promos', JSON.stringify(promoCodes)); }, [promoCodes, isLoaded]);
 
@@ -119,7 +119,7 @@ export default function Home() {
   return (
     <div className="min-h-screen bg-white text-[#0A1128] font-sans selection:bg-blue-100 overflow-x-hidden pt-8"> 
       
-      <ProductModal isOpen={!!selectedProduct} product={selectedProduct} onClose={() => setSelectedProduct(null)} onAddToCart={addToCart} />
+      <ProductModal key={selectedProduct?.id ?? 'none'} isOpen={!!selectedProduct} product={selectedProduct} onClose={() => setSelectedProduct(null)} onAddToCart={addToCart} />
       
       <CheckoutForm 
         isOpen={isCheckoutOpen} 

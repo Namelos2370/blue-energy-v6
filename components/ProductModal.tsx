@@ -15,6 +15,7 @@ export default function ProductModal({ product, isOpen, onClose, onAddToCart }: 
   const [size, setSize] = useState<string>("");
   const [color, setColor] = useState<string>("");
   const [showGuide, setShowGuide] = useState(false);
+  const [activeImg, setActiveImg] = useState(0);
 
   if (!isOpen || !product) return null;
 
@@ -33,7 +34,19 @@ export default function ProductModal({ product, isOpen, onClose, onAddToCart }: 
         
         {/* Partie Gauche : Image */}
         <div className="w-full md:w-1/2 bg-gray-100 relative h-64 md:h-auto">
-          <Image src={product.images[0]} alt={product.title} fill className="object-cover" />
+          <Image src={product.images[activeImg] ?? product.images[0]} alt={product.title} fill className="object-cover" />
+          {product.images.length > 1 && (
+            <div className="absolute bottom-4 left-1/2 -translate-x-1/2 flex gap-2">
+              {product.images.map((_, i) => (
+                <button
+                  key={i}
+                  onClick={() => setActiveImg(i)}
+                  aria-label={`Photo ${i + 1}`}
+                  className={`w-2.5 h-2.5 rounded-full transition ${activeImg === i ? 'bg-[#0A1128] scale-125' : 'bg-white/80'}`}
+                />
+              ))}
+            </div>
+          )}
           <button onClick={onClose} className="absolute top-4 right-4 bg-white/80 p-2 rounded-full md:hidden"><X /></button>
         </div>
 
