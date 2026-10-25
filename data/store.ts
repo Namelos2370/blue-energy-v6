@@ -1,11 +1,18 @@
 // Types définis pour toute l'application
+export type Category = 'hoodie' | 't-shirt' | 'polo' | 'jogging' | 'accessoire';
+
+export type PromoCode = {
+  code: string;
+  percent: number;
+};
+
 export type Product = {
     id: number;
     title: string;
     price: number;
     tag: string;
     desc: string;
-    category: 'hoodie' | 't-shirt' | 'accessoire';
+    category: Category;
     images: string[]; // Tableau d'images pour la galerie
     stock: number;
     sizes: string[];  // ex: ['S', 'M', 'L']

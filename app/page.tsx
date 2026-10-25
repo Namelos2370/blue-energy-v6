@@ -8,22 +8,16 @@ import {
 import Image from 'next/image';
 
 // IMPORTATIONS
-import { Product, CartItem, INITIAL_PRODUCTS } from '../data/store';
+import { Product, CartItem, PromoCode, Category, INITIAL_PRODUCTS } from '../data/store';
 import ProductModal from '../components/ProductModal';
 import CheckoutForm from '../components/CheckoutForm';
 import AdminDashboard from '../components/AdminDashboard';
 import ChatBot from '../components/ChatBot';
 
-// Type pour les codes promo
-export type PromoCode = {
-  code: string;
-  percent: number;
-};
-
 export default function Home() {
   const [products, setProducts] = useState<Product[]>(INITIAL_PRODUCTS);
   const [cart, setCart] = useState<CartItem[]>([]);
-  const [selectedCategory, setSelectedCategory] = useState<'all' | 'hoodie' | 't-shirt' | 'polo' | 'jogging' | 'accessoire'>('all');
+  const [selectedCategory, setSelectedCategory] = useState<'all' | Category>('all');
   
   // États Promo
   const [promoCodes, setPromoCodes] = useState<PromoCode[]>([
@@ -289,8 +283,8 @@ export default function Home() {
       <section id="collection" className="py-24 px-4 max-w-7xl mx-auto">
         <div className="text-center mb-12"><h2 className="text-4xl font-black mb-2 tracking-tight text-[#0A1128]">LES ESSENTIELS 2026</h2><p className="text-gray-400 font-medium">3 pièces maîtresses pour refaire votre garde-robe.</p></div>
         <div className="flex justify-center gap-3 mb-12 overflow-x-auto pb-4 scrollbar-hide">
-          {['all', 'hoodie', 't-shirt', 'polo', 'jogging', 'accessoire'].map((cat) => (
-            <button key={cat} onClick={() => setSelectedCategory(cat as any)} className={`px-6 py-2 rounded-full font-bold uppercase text-xs tracking-wider transition whitespace-nowrap border ${selectedCategory === cat ? 'bg-[#0A1128] text-white border-[#0A1128]' : 'bg-white text-gray-500 border-gray-200 hover:border-gray-400'}`}>{cat === 'all' ? 'Tout voir' : cat + 's'}</button>
+          {(['all', 'hoodie', 't-shirt', 'polo', 'jogging', 'accessoire'] as const).map((cat) => (
+            <button key={cat} onClick={() => setSelectedCategory(cat)} className={`px-6 py-2 rounded-full font-bold uppercase text-xs tracking-wider transition whitespace-nowrap border ${selectedCategory === cat ? 'bg-[#0A1128] text-white border-[#0A1128]' : 'bg-white text-gray-500 border-gray-200 hover:border-gray-400'}`}>{cat === 'all' ? 'Tout voir' : cat + 's'}</button>
           ))}
         </div>
         <div className="grid md:grid-cols-3 gap-10">

@@ -1,6 +1,6 @@
 "use client";
 import React, { useState } from 'react';
-import { X, Check, ShoppingBag, Ruler } from 'lucide-react';
+import { X, ShoppingBag, Ruler } from 'lucide-react';
 import Image from 'next/image';
 import { Product } from '../data/store';
 

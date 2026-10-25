@@ -1,10 +1,7 @@
 "use client";
 import React, { useState } from 'react';
 import { X, Save, Eye, Package, Tag, Trash2, Plus, Lock, Search, Upload } from 'lucide-react';
-import { Product } from '../data/store';
-
-// On définit le type PromoCode ici pour être sûr
-type PromoCode = { code: string; percent: number };
+import { Product, PromoCode } from '../data/store';
 
 interface AdminProps {
   isOpen: boolean;
@@ -26,7 +23,7 @@ export default function AdminDashboard({ isOpen, onClose, products, setProducts,
   // --- ÉTATS FORMULAIRE AJOUT PRODUIT ---
   const [showAddForm, setShowAddForm] = useState(false);
   const [newProduct, setNewProduct] = useState<Partial<Product>>({
-    title: "", price: 0, stock: 10, category: "t-shirt" as any, tag: "NOUVEAU", images: ["/images/placeholder.png"]
+    title: "", price: 0, stock: 10, category: "t-shirt", tag: "NOUVEAU", images: ["/images/placeholder.png"]
   });
 
   // --- ÉTATS PROMOS ---
@@ -76,7 +73,7 @@ export default function AdminDashboard({ isOpen, onClose, products, setProducts,
       title: newProduct.title,
       price: Number(newProduct.price),
       stock: Number(newProduct.stock),
-      category: newProduct.category as any,
+      category: newProduct.category ?? 't-shirt',
       tag: newProduct.tag || "NOUVEAU",
       images: newProduct.images && newProduct.images[0] !== "/images/placeholder.png" 
               ? newProduct.images 
@@ -87,7 +84,7 @@ export default function AdminDashboard({ isOpen, onClose, products, setProducts,
 
     setProducts(prev => [productToAdd, ...prev]);
     setShowAddForm(false);
-    setNewProduct({ title: "", price: 0, stock: 10, category: "t-shirt" as any, tag: "NOUVEAU", images: ["/images/placeholder.png"] });
+    setNewProduct({ title: "", price: 0, stock: 10, category: "t-shirt", tag: "NOUVEAU", images: ["/images/placeholder.png"] });
   };
 
   // 🏷️ GESTION PROMOS
