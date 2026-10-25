@@ -111,7 +111,7 @@ export default function ProductModal({ product, isOpen, onClose, onAddToCart }: 
               {product.colors.map((c) => (
                 <button 
                   key={c} 
-                  onClick={() => setColor(c)}
+                  onClick={() => { setColor(c); const idx = product.colorImages?.[c]; if (idx !== undefined) goToImage(idx); }}
                   className={`px-4 py-2 rounded-lg border-2 text-sm font-bold transition ${color === c ? 'border-blue-600 bg-blue-50 text-blue-800' : 'border-gray-200 hover:border-gray-300'}`}
                 >
                   {c}
