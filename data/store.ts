@@ -74,41 +74,5 @@ export const INITIAL_PRODUCTS: Product[] = [
     stock: 10,
     sizes: ["M", "L", "XL", "XXL"],
     colors: ["Bleu ciel"]
-  },
-  {
-    id: 5,
-    title: "T-shirt Signature",
-    price: 6500,
-    tag: "Nouveau",
-    desc: "T-shirt en coton, coupe confortable, broderie Blue Energy sur la poitrine.",
-    category: 't-shirt',
-    images: ["/images/tshirt.jpg"],
-    stock: 20,
-    sizes: ["S", "M", "L", "XL"],
-    colors: ["Navy"]
-  },
-  {
-    id: 6,
-    title: "Pantalon Jogging",
-    price: 10000,
-    tag: "Nouveau",
-    desc: "Pantalon jogging en molleton épais, cordon de serrage, broderie Blue Energy. Se porte seul ou avec le pull assorti.",
-    category: 'jogging',
-    images: ["/images/pantalon.jpg"],
-    stock: 15,
-    sizes: ["M", "L", "XL", "XXL"],
-    colors: ["Navy"]
-  },
-  {
-    id: 7,
-    title: "Ensemble Navy",
-    price: 18000,
-    tag: "Nouveau",
-    desc: "Pull à capuche + pantalon jogging assortis en molleton épais, navy, broderie Blue Energy sur les deux pièces.",
-    category: 'jogging',
-    images: ["/images/ensemble-navy.jpg"],
-    stock: 10,
-    sizes: ["M", "L", "XL", "XXL"],
-    colors: ["Navy"]
   }
 ];
