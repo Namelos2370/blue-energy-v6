@@ -1,10 +1,7 @@
 "use client";
 import React, { useState } from 'react';
 import { X, Save, Eye, Package, Tag, Trash2, Plus, Lock, Search, Edit2, Upload } from 'lucide-react';
-import { Product } from '../data/store';
-
-// On définit le type PromoCode ici pour être sûr
-type PromoCode = { code: string; percent: number };
+import { Product, PromoCode } from '../data/store';
 
 interface AdminProps {
   isOpen: boolean;
@@ -76,12 +73,12 @@ export default function AdminDashboard({ isOpen, onClose, products, setProducts,
       title: newProduct.title,
       price: Number(newProduct.price),
       stock: Number(newProduct.stock),
-      category: newProduct.category as any,
+      category: (newProduct.category ?? 't-shirt') as Product['category'],
       tag: newProduct.tag || "NOUVEAU",
       images: newProduct.images && newProduct.images[0] !== "/images/placeholder.png" 
               ? newProduct.images 
               : ["/images/hoodie.png"], // Image uploadée ou image par défaut
-      description: "Collection Vision 2026. Coupe premium.",
+      desc: "Collection Vision 2026. Coupe premium.",
       sizes: ["S", "M", "L", "XL"],
       colors: ["Standard"]
     };

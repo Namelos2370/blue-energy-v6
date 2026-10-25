@@ -3,28 +3,31 @@
 import React, { useState, useEffect } from 'react';
 import { 
   ShoppingBag, ArrowRight, Menu, X, Trash2, CheckCircle, 
-  Truck, CreditCard, Star, Plus, Lock, Tag 
+  Truck, CreditCard, Star, Plus, Lock, Tag, MessageCircle
 } from 'lucide-react';
 import Image from 'next/image';
 
 // IMPORTATIONS
-import { Product, CartItem, INITIAL_PRODUCTS } from '../data/store';
+import { Product, CartItem, PromoCode, Category, INITIAL_PRODUCTS } from '../data/store';
 import ProductModal from '../components/ProductModal';
 import CheckoutForm from '../components/CheckoutForm';
 import AdminDashboard from '../components/AdminDashboard';
 import ChatBot from '../components/ChatBot';
 
-// Type pour les codes promo
-export type PromoCode = {
-  code: string;
-  percent: number;
-};
+const CATEGORIES: { id: 'all' | Category; label: string }[] = [
+  { id: 'all', label: 'Tout' },
+  { id: 'hoodie', label: 'Hoodies' },
+  { id: 't-shirt', label: 'T-shirts' },
+  { id: 'polo', label: 'Polos' },
+  { id: 'jogging', label: 'Joggings' },
+  { id: 'accessoire', label: 'Accessoires' },
+];
 
 export default function Home() {
   const [products, setProducts] = useState<Product[]>(INITIAL_PRODUCTS);
   const [cart, setCart] = useState<CartItem[]>([]);
   // MISE À JOUR : Ajout de 'polo' et 'jogging' dans les types de catégories
-  const [selectedCategory, setSelectedCategory] = useState<'all' | 'hoodie' | 't-shirt' | 'polo' | 'jogging' | 'accessoire'>('all');
+  const [selectedCategory, setSelectedCategory] = useState<'all' | Category>('all');
   
   // États Promo
   const [promoCodes, setPromoCodes] = useState<PromoCode[]>([
@@ -149,12 +152,11 @@ export default function Home() {
       <ChatBot />
 
       <div className="fixed top-0 left-0 w-full h-8 bg-[#0A1128] text-white z-[60] flex items-center overflow-hidden border-b border-white/10">
-          {/* @ts-ignore */}
-          <marquee scrollamount="6" className="text-xs font-bold uppercase tracking-widest">
+          <div className="marquee text-xs font-bold uppercase tracking-widest"><div className="marquee-track">
               <span className="mx-4">⚡ Profitez de 10% de réduction sur vos commandes de 10.000fr maximum</span>
               <span className="mx-4">•</span>
               <span className="mx-4">🚚 Livraison gratuite pour les commandes de plus de 20.000fr</span>
-          </marquee>
+          </div></div>
       </div>
 
       <nav className="fixed w-full top-8 bg-white/90 backdrop-blur-md z-50 border-b border-gray-100 transition-all">
@@ -265,8 +267,7 @@ export default function Home() {
       </section>
 
       <div className="w-full bg-[#0A1128] text-white overflow-hidden py-4 border-y border-blue-900">
-        {/* @ts-ignore */}
-        <marquee scrollamount="6" loop="infinite" direction="left"><div className="flex gap-12 items-center font-bold tracking-[0.2em] uppercase text-sm"><span className="text-gray-300">Blue Energy</span><span className="w-1.5 h-1.5 rounded-full bg-blue-500"></span><span className="text-white">Qualité Premium 2026</span><span className="w-1.5 h-1.5 rounded-full bg-blue-500"></span><span className="text-gray-300">Livraison internationale</span><span className="w-1.5 h-1.5 rounded-full bg-blue-500"></span><span className="text-white">Blue Energy</span><span className="w-1.5 h-1.5 rounded-full bg-blue-500"></span><span className="text-gray-300">Établi en 2025</span><span className="w-1.5 h-1.5 rounded-full bg-blue-500"></span><span className="text-white">Yaoundé</span></div></marquee>
+        <div className="marquee"><div className="marquee-track"><div className="flex gap-12 items-center font-bold tracking-[0.2em] uppercase text-sm"><span className="text-gray-300">Blue Energy</span><span className="w-1.5 h-1.5 rounded-full bg-blue-500"></span><span className="text-white">Qualité Premium 2026</span><span className="w-1.5 h-1.5 rounded-full bg-blue-500"></span><span className="text-gray-300">Livraison internationale</span><span className="w-1.5 h-1.5 rounded-full bg-blue-500"></span><span className="text-white">Blue Energy</span><span className="w-1.5 h-1.5 rounded-full bg-blue-500"></span><span className="text-gray-300">Établi en 2025</span><span className="w-1.5 h-1.5 rounded-full bg-blue-500"></span><span className="text-white">Yaoundé</span></div></div></div>
       </div>
 
       <section id="philosophie" className="py-20 bg-white relative overflow-hidden">
@@ -284,8 +285,93 @@ export default function Home() {
       </section>
 
       <section id="collection" className="py-24 px-4 max-w-7xl mx-auto">
-        <div className="text-center mb-12"><h2 className="text-4xl font-black mb-2 tracking-tight text-[#0A1128]">LES ESSENTIELS 2026</h2><p className="text-gray-400 font-medium">3 pièces maîtresses pour refaire votre garde-robe.</p></div>
+        <div className="text-center mb-12"><h2 className="text-4xl font-black mb-2 tracking-tight text-[#0A1128]">LES ESSENTIELS 2026</h2><p className="text-gray-400 font-medium">Des pièces maîtresses pour refaire votre garde-robe.</p></div>
         <div className="flex justify-center gap-3 mb-12 overflow-x-auto pb-4 scrollbar-hide">
-          {/* MISE À JOUR : Ajout de 'polo' et 'jogging' dans la barre de filtre */}
-          {['all', 'hoodie', 't-shirt', 'polo', 'jogging', 'accessoire'].map((cat) => (
-            <button key={cat} onClick={() => setSelectedCategory
+          {CATEGORIES.map((cat) => (
+            <button
+              key={cat.id}
+              onClick={() => setSelectedCategory(cat.id)}
+              className={`px-5 py-2 rounded-full text-sm font-bold uppercase tracking-wider whitespace-nowrap transition border-2 ${selectedCategory === cat.id ? 'bg-[#0A1128] text-white border-[#0A1128]' : 'bg-white text-gray-500 border-gray-200 hover:border-[#0A1128] hover:text-[#0A1128]'}`}
+            >
+              {cat.label}
+            </button>
+          ))}
+        </div>
+
+        {filteredProducts.length === 0 ? (
+          <p className="text-center text-gray-400 font-medium py-16">Aucun produit dans cette catégorie pour le moment.</p>
+        ) : (
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
+            {filteredProducts.map((product) => (
+              <div key={product.id} className="group bg-white rounded-3xl border border-gray-100 overflow-hidden shadow-sm hover:shadow-xl transition duration-300">
+                <button onClick={() => setSelectedProduct(product)} className="block w-full text-left">
+                  <div className="relative h-80 bg-gray-50 overflow-hidden">
+                    <Image src={product.images[0]} alt={product.title} fill className="object-cover group-hover:scale-105 transition duration-700" />
+                    <span className="absolute top-4 left-4 bg-white/90 backdrop-blur px-3 py-1 rounded-full text-xs font-bold uppercase tracking-wider text-[#0A1128] flex items-center gap-1">
+                      <Star size={12} className="text-blue-600" /> {product.tag}
+                    </span>
+                    {product.stock <= 0 && (
+                      <div className="absolute inset-0 bg-white/70 flex items-center justify-center"><span className="bg-[#0A1128] text-white px-4 py-2 rounded-full font-bold text-sm">Rupture de stock</span></div>
+                    )}
+                    {product.stock > 0 && product.stock <= 5 && (
+                      <span className="absolute bottom-4 left-4 bg-red-500 text-white px-3 py-1 rounded-full text-xs font-bold">Plus que {product.stock} en stock</span>
+                    )}
+                  </div>
+                  <div className="p-6">
+                    <h3 className="font-black text-xl text-[#0A1128] mb-1">{product.title}</h3>
+                    <p className="text-gray-500 text-sm line-clamp-2 mb-4">{product.desc}</p>
+                  </div>
+                </button>
+                <div className="px-6 pb-6 flex items-center justify-between">
+                  <span className="text-blue-700 font-black text-lg">{product.price.toLocaleString()} FCFA</span>
+                  <button
+                    onClick={() => setSelectedProduct(product)}
+                    disabled={product.stock <= 0}
+                    className="bg-[#0A1128] text-white p-3 rounded-full hover:bg-blue-900 transition disabled:opacity-40 disabled:cursor-not-allowed"
+                    aria-label={`Choisir ${product.title}`}
+                  >
+                    <Plus size={20} />
+                  </button>
+                </div>
+              </div>
+            ))}
+          </div>
+        )}
+      </section>
+
+      <section className="bg-gray-50 py-16 px-4">
+        <div className="max-w-5xl mx-auto grid md:grid-cols-3 gap-8 text-center">
+          <div className="p-6"><Truck className="mx-auto mb-4 text-blue-600" size={32} /><h4 className="font-black mb-1">Livraison rapide</h4><p className="text-gray-500 text-sm">24h à Yaoundé et Douala, 48 à 72h ailleurs. Offerte dès 20.000 FCFA.</p></div>
+          <div className="p-6"><CreditCard className="mx-auto mb-4 text-blue-600" size={32} /><h4 className="font-black mb-1">Paiement à la livraison</h4><p className="text-gray-500 text-sm">Vous confirmez votre commande sur WhatsApp, vous payez à la réception.</p></div>
+          <div className="p-6"><Tag className="mx-auto mb-4 text-blue-600" size={32} /><h4 className="font-black mb-1">Codes promo</h4><p className="text-gray-500 text-sm">Utilisez un code au panier pour profiter de nos offres.</p></div>
+        </div>
+      </section>
+
+      <footer className="bg-[#0A1128] text-white py-12 px-4">
+        <div className="max-w-6xl mx-auto flex flex-col md:flex-row items-center justify-between gap-6">
+          <div className="text-center md:text-left">
+            <p className="font-extrabold text-xl tracking-tight">BLUE ENERGY</p>
+            <p className="text-gray-400 text-sm">Designed in Cameroon. Elevate Your Standard.</p>
+          </div>
+          <div className="flex items-center gap-6 text-sm text-gray-400">
+            <span>© 2026 Blue Energy</span>
+            <span className="hidden sm:inline">{siteViews.toLocaleString()} visites</span>
+            <button onClick={() => setIsAdminOpen(true)} className="p-2 rounded-full hover:bg-white/10 transition" aria-label="Administration">
+              <Lock size={16} />
+            </button>
+          </div>
+        </div>
+      </footer>
+
+      <a
+        href="https://wa.me/237658980051"
+        target="_blank"
+        rel="noopener noreferrer"
+        className="fixed bottom-6 left-6 z-40 bg-green-500 text-white p-4 rounded-full shadow-2xl hover:bg-green-600 hover:scale-110 transition"
+        aria-label="Nous écrire sur WhatsApp"
+      >
+        <MessageCircle size={24} />
+      </a>
+    </div>
+  );
+}

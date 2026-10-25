@@ -24,3 +24,12 @@ body {
   color: var(--foreground);
   font-family: Arial, Helvetica, sans-serif;
 }
+
+/* Bandeaux défilants (remplace la balise <marquee> obsolète) */
+.marquee { overflow: hidden; white-space: nowrap; width: 100%; }
+.marquee-track { display: inline-flex; min-width: 100%; animation: marquee-scroll 25s linear infinite; padding-left: 100%; }
+@keyframes marquee-scroll { from { transform: translateX(0); } to { transform: translateX(-100%); } }
+
+/* Masque la barre de défilement (filtres catégories) */
+.scrollbar-hide { -ms-overflow-style: none; scrollbar-width: none; }
+.scrollbar-hide::-webkit-scrollbar { display: none; }
