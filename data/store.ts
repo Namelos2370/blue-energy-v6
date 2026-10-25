@@ -37,7 +37,7 @@ export const INITIAL_PRODUCTS: Product[] = [
     images: ["/images/hoodie.png"],
     stock: 10,
     sizes: ["M", "L", "XL", "XXL"],
-    colors: ["Navy Blue", "Bleu ciel"]
+    colors: ["Navy"]
   },
   {
     id: 2,
@@ -65,15 +65,15 @@ export const INITIAL_PRODUCTS: Product[] = [
   },
   {
     id: 4,
-    title: "Ensemble Blue Energy",
+    title: "Ensemble Bleu Ciel",
     price: 18000,
     tag: "Nouveau",
-    desc: "Pull à capuche + pantalon jogging assortis en molleton épais, broderie Blue Energy sur les deux pièces. Le look complet.",
+    desc: "Pull à capuche + pantalon jogging assortis en molleton épais, bleu ciel, broderie Blue Energy sur les deux pièces. Le look complet.",
     category: 'jogging',
     images: ["/images/ensemble-1.jpg", "/images/ensemble-2.jpg"],
     stock: 10,
     sizes: ["M", "L", "XL", "XXL"],
-    colors: ["Bleu ciel", "Navy"]
+    colors: ["Bleu ciel"]
   },
   {
     id: 5,
@@ -97,6 +97,18 @@ export const INITIAL_PRODUCTS: Product[] = [
     images: ["/images/pantalon.jpg"],
     stock: 15,
     sizes: ["M", "L", "XL", "XXL"],
-    colors: ["Navy", "Bleu ciel"]
+    colors: ["Navy"]
+  },
+  {
+    id: 7,
+    title: "Ensemble Navy",
+    price: 18000,
+    tag: "Nouveau",
+    desc: "Pull à capuche + pantalon jogging assortis en molleton épais, navy, broderie Blue Energy sur les deux pièces.",
+    category: 'jogging',
+    images: ["/images/ensemble-navy.jpg"],
+    stock: 10,
+    sizes: ["M", "L", "XL", "XXL"],
+    colors: ["Navy"]
   }
 ];
