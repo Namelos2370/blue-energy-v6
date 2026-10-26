@@ -28,3 +28,7 @@ body {
 /* Masque la barre de défilement (filtres catégories, galerie photos) */
 .scrollbar-hide { -ms-overflow-style: none; scrollbar-width: none; }
 .scrollbar-hide::-webkit-scrollbar { display: none; }
+
+/* Bandeau promo défilant */
+@keyframes marquee { from { transform: translateX(0); } to { transform: translateX(-50%); } }
+.animate-marquee { animation: marquee 40s linear infinite; width: max-content; }
