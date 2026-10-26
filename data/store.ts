@@ -35,11 +35,11 @@ export const INITIAL_PRODUCTS: Product[] = [
     tag: "Best Seller",
     desc: "Pull à capuche en molleton lourd, intérieur gratté, broderie Blue Energy. Coupe oversize intemporelle.",
     category: 'hoodie',
-    images: ["/images/pull-blanc.jpg", "/images/pull-rouge.jpg", "/images/pull-bleu-roi.jpg", "/images/pull-rose.jpg", "/images/pull-blanc-2.jpg", "/images/pull-blanc-3.jpg", "/images/pull-blanc-4.jpg"],
+    images: ["/images/pull-blanc.jpg", "/images/pull-rouge.jpg", "/images/pull-bleu-roi.jpg", "/images/pull-rose.jpg", "/images/pull-marine.jpg", "/images/pull-blanc-2.jpg", "/images/pull-blanc-3.jpg", "/images/pull-blanc-4.jpg"],
     stock: 10,
     sizes: ["M", "L", "XL", "XXL"],
-    colors: ["Blanc", "Rouge", "Bleu roi", "Rose"],
-    colorImages: { "Blanc": 0, "Rouge": 1, "Bleu roi": 2, "Rose": 3 }
+    colors: ["Blanc", "Rouge", "Bleu roi", "Rose", "Marine"],
+    colorImages: { "Blanc": 0, "Rouge": 1, "Bleu roi": 2, "Rose": 3, "Marine": 4 }
   },
   {
     id: 3,
