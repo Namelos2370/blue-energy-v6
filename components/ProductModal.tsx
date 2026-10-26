@@ -9,14 +9,16 @@ interface ModalProps {
   isOpen: boolean;
   onClose: () => void;
   onAddToCart: (product: Product, size: string, color: string) => void;
+  initialColor?: string;
 }
 
-export default function ProductModal({ product, isOpen, onClose, onAddToCart }: ModalProps) {
+export default function ProductModal({ product, isOpen, onClose, onAddToCart, initialColor }: ModalProps) {
   const [size, setSize] = useState<string>("");
-  const [color, setColor] = useState<string>("");
+  const [color, setColor] = useState<string>(initialColor ?? "");
   const [showGuide, setShowGuide] = useState(false);
   const [activeImg, setActiveImg] = useState(0);
-  const galleryRef = useRef<HTMLDivElement>(null);
+  const galleryRef = useRef<HTMLDivElement | null>(null);
+  const didInit = useRef(false);
 
   if (!isOpen || !product) return null;
 
@@ -48,7 +50,7 @@ export default function ProductModal({ product, isOpen, onClose, onAddToCart }: 
         {/* Partie Gauche : Galerie (glisser vers le côté pour voir les autres photos) */}
         <div className="w-full md:w-1/2 bg-gray-100 relative h-[55vh] md:h-auto shrink-0">
           <div
-            ref={galleryRef}
+            ref={(el) => { galleryRef.current = el; if (el && !didInit.current) { didInit.current = true; const i = initialColor ? product.colorImages?.[initialColor] : undefined; if (i) { el.scrollLeft = i * el.clientWidth; setActiveImg(i); } } }}
             onScroll={handleGalleryScroll}
             className="flex h-full w-full overflow-x-auto snap-x snap-mandatory scrollbar-hide"
           >
