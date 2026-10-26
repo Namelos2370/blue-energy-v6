@@ -89,12 +89,12 @@ export const INITIAL_PRODUCTS: Product[] = [
     title: "T-shirt Signature",
     price: 6500,
     tag: "Nouveau",
-    desc: "T-shirt en coton jersey, col côtelé et coupe ajustée, avec la broderie Blue Energy bleu marine sur la poitrine.",
+    desc: "T-shirt en coton jersey, col côtelé et coupe ajustée, avec la broderie Blue Energy sur la poitrine, disponible en 7 coloris.",
     category: 't-shirt',
-    images: ["/images/tshirt-sauge.jpg", "/images/tshirt-noir-1.jpg", "/images/tshirt-noir-2.jpg", "/images/tshirt-noir-3.jpg", "/images/tshirt-noir-4.jpg", "/images/tshirt-noir-5.jpg"],
+    images: ["/images/tshirt-sauge.jpg", "/images/tshirt-noir-1.jpg", "/images/tshirt-rose.jpg", "/images/tshirt-violet.jpg", "/images/tshirt-vert-foret.jpg", "/images/tshirt-vert-pomme.jpg", "/images/tshirt-marron.jpg", "/images/tshirt-noir-2.jpg", "/images/tshirt-noir-3.jpg", "/images/tshirt-noir-4.jpg", "/images/tshirt-noir-5.jpg"],
     stock: 20,
     sizes: ["S", "M", "L", "XL"],
-    colors: ["Sauge", "Noir"],
-    colorImages: { Sauge: 0, Noir: 1 }
+    colors: ["Sauge", "Noir", "Rose", "Violet", "Vert forêt", "Vert pomme", "Marron"],
+    colorImages: { Sauge: 0, Noir: 1, Rose: 2, Violet: 3, "Vert forêt": 4, "Vert pomme": 5, Marron: 6 }
   }
 ];
