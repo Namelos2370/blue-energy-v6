@@ -14,8 +14,11 @@ import CheckoutForm from '../components/CheckoutForm';
 import AdminDashboard from '../components/AdminDashboard';
 import ChatBot from '../components/ChatBot';
 
+const COLOR_HEX: Record<string, string> = { Navy: '#14213d', Bordeaux: '#6d1a2b', Kaki: '#5b6340', Sauge: '#a9b8a0', Noir: '#111111', Blanc: '#ffffff', 'Bleu ciel': '#8ec5ea' };
+
 export default function Home() {
   const [products, setProducts] = useState<Product[]>(INITIAL_PRODUCTS);
+  const [cardColor, setCardColor] = useState<Record<number, string>>({});
   const [cart, setCart] = useState<CartItem[]>([]);
   const [selectedCategory, setSelectedCategory] = useState<'all' | Category>('all');
   
@@ -40,7 +43,7 @@ export default function Home() {
 
   // --- SAUVEGARDE & LOGIQUE ---
   useEffect(() => {
-    const savedProducts = localStorage.getItem('be-stock-v13');
+    const savedProducts = localStorage.getItem('be-stock-v14');
     const savedCart = localStorage.getItem('be-cart');
     const savedPromos = localStorage.getItem('be-promos');
     
@@ -70,7 +73,7 @@ export default function Home() {
     setIsLoaded(true);
   }, []);
 
-  useEffect(() => { if (isLoaded) localStorage.setItem('be-stock-v13', JSON.stringify(products)); }, [products, isLoaded]);
+  useEffect(() => { if (isLoaded) localStorage.setItem('be-stock-v14', JSON.stringify(products)); }, [products, isLoaded]);
   useEffect(() => { if (isLoaded) localStorage.setItem('be-cart', JSON.stringify(cart)); }, [cart, isLoaded]);
   useEffect(() => { if (isLoaded) localStorage.setItem('be-promos', JSON.stringify(promoCodes)); }, [promoCodes, isLoaded]);
 
@@ -119,7 +122,7 @@ export default function Home() {
   return (
     <div className="min-h-screen bg-white text-[#0A1128] font-sans selection:bg-blue-100 overflow-x-hidden pt-8"> 
       
-      <ProductModal key={selectedProduct?.id ?? 'none'} isOpen={!!selectedProduct} product={selectedProduct} onClose={() => setSelectedProduct(null)} onAddToCart={addToCart} />
+      <ProductModal key={selectedProduct?.id ?? 'none'} isOpen={!!selectedProduct} product={selectedProduct} onClose={() => setSelectedProduct(null)} onAddToCart={addToCart} initialColor={selectedProduct ? cardColor[selectedProduct.id] : undefined} />
       
       <CheckoutForm 
         isOpen={isCheckoutOpen} 
@@ -293,11 +296,18 @@ export default function Home() {
               <div className="relative aspect-[4/5] bg-gray-100 rounded-[2rem] overflow-hidden mb-4 shadow-sm group-hover:shadow-2xl transition duration-500 border border-gray-100">
                 <div className="absolute top-4 left-4 z-10 bg-white/90 backdrop-blur px-3 py-1 text-xs font-bold rounded-full uppercase text-[#0A1128] shadow-sm">{product.tag}</div>
                 {product.stock === 0 && <div className="absolute top-4 right-4 z-10 bg-red-600 text-white px-3 py-1 text-xs font-bold rounded-full uppercase">Épuisé</div>}
-                <Image src={product.images[0]} alt={product.title} fill className={`object-cover transition duration-700 ${product.stock === 0 ? 'grayscale' : 'group-hover:scale-105'}`} />
+                <Image src={product.images[(product.colorImages && cardColor[product.id] !== undefined ? product.colorImages[cardColor[product.id]] : 0) ?? 0]} alt={product.title} fill className={`object-cover transition duration-700 ${product.stock === 0 ? 'grayscale' : 'group-hover:scale-105'}`} />
                 <div className="absolute inset-0 bg-black/10 opacity-0 group-hover:opacity-100 transition flex items-end justify-center p-6"><span className="w-full bg-white text-[#0A1128] py-3 rounded-xl font-bold shadow-xl transform translate-y-4 group-hover:translate-y-0 transition flex items-center justify-center gap-2"><Plus size={18} /> Voir détails</span></div>
               </div>
               <div className="px-2">
                  <div className="flex justify-between items-start mb-1"><h3 className="font-bold text-lg leading-tight">{product.title}</h3><p className="text-blue-700 font-bold">{product.price.toLocaleString()} FCFA</p></div>
+                 {product.colorImages && product.colors.length > 1 && (
+                   <div className="flex gap-2 mb-2" onClick={(e) => e.stopPropagation()}>
+                     {product.colors.map(c => (
+                       <button key={c} type="button" title={c} aria-label={c} onClick={() => setCardColor(prev => ({ ...prev, [product.id]: c }))} className={`w-6 h-6 rounded-full border-2 transition ${(cardColor[product.id] ?? product.colors[0]) === c ? 'border-[#0A1128] scale-110' : 'border-gray-200'}`} style={{ backgroundColor: COLOR_HEX[c] ?? '#ccc' }} />
+                     ))}
+                   </div>
+                 )}
                  <div className="flex gap-1 mb-2">{[1,2,3,4,5].map(s => <Star key={s} size={12} className="fill-yellow-400 text-yellow-400"/>)}<span className="text-xs text-gray-400 ml-1">(4.9)</span></div>
               </div>
             </div>
