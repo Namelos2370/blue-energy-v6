@@ -35,10 +35,10 @@ export const INITIAL_PRODUCTS: Product[] = [
     tag: "Best Seller",
     desc: "Pull à capuche en molleton lourd, intérieur gratté, broderie Blue Energy. Coupe oversize intemporelle.",
     category: 'hoodie',
-    images: ["/images/hoodie.png"],
+    images: ["/images/pull-blanc.jpg"],
     stock: 10,
     sizes: ["M", "L", "XL", "XXL"],
-    colors: ["Navy"]
+    colors: ["Blanc"]
   },
   {
     id: 2,
@@ -93,5 +93,17 @@ export const INITIAL_PRODUCTS: Product[] = [
     sizes: ["M", "L", "XL", "XXL"],
     colors: ["Navy", "Bordeaux", "Kaki"],
     colorImages: { "Navy": 0, "Bordeaux": 1, "Kaki": 2 }
+  },
+  {
+    id: 6,
+    title: "T-shirt Signature",
+    price: 6500,
+    tag: "Nouveau",
+    desc: "T-shirt en coton jersey, col côtelé et coupe ajustée, avec la broderie Blue Energy bleu marine sur la poitrine.",
+    category: 't-shirt',
+    images: ["/images/tshirt-sauge.jpg"],
+    stock: 20,
+    sizes: ["S", "M", "L", "XL"],
+    colors: ["Sauge"]
   }
 ];
