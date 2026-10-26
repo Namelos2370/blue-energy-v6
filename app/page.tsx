@@ -43,7 +43,7 @@ export default function Home() {
 
   // --- SAUVEGARDE & LOGIQUE ---
   useEffect(() => {
-    const savedProducts = localStorage.getItem('be-stock-v16');
+    const savedProducts = localStorage.getItem('be-stock-v17');
     const savedCart = localStorage.getItem('be-cart');
     const savedPromos = localStorage.getItem('be-promos');
     
@@ -73,7 +73,7 @@ export default function Home() {
     setIsLoaded(true);
   }, []);
 
-  useEffect(() => { if (isLoaded) localStorage.setItem('be-stock-v16', JSON.stringify(products)); }, [products, isLoaded]);
+  useEffect(() => { if (isLoaded) localStorage.setItem('be-stock-v17', JSON.stringify(products)); }, [products, isLoaded]);
   useEffect(() => { if (isLoaded) localStorage.setItem('be-cart', JSON.stringify(cart)); }, [cart, isLoaded]);
   useEffect(() => { if (isLoaded) localStorage.setItem('be-promos', JSON.stringify(promoCodes)); }, [promoCodes, isLoaded]);
 
