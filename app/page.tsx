@@ -14,7 +14,7 @@ import CheckoutForm from '../components/CheckoutForm';
 import AdminDashboard from '../components/AdminDashboard';
 import ChatBot from '../components/ChatBot';
 
-const COLOR_HEX: Record<string, string> = { Navy: '#14213d', Bordeaux: '#6d1a2b', Kaki: '#5b6340', Sauge: '#a9b8a0', Noir: '#111111', Blanc: '#ffffff', 'Bleu ciel': '#8ec5ea' };
+const COLOR_HEX: Record<string, string> = { Navy: '#14213d', Bordeaux: '#6d1a2b', Kaki: '#5b6340', Sauge: '#a9b8a0', Rouge: '#c8102e', 'Bleu roi': '#1f4fd1', Noir: '#111111', Blanc: '#ffffff', 'Bleu ciel': '#8ec5ea' };
 
 export default function Home() {
   const [products, setProducts] = useState<Product[]>(INITIAL_PRODUCTS);
@@ -43,7 +43,7 @@ export default function Home() {
 
   // --- SAUVEGARDE & LOGIQUE ---
   useEffect(() => {
-    const savedProducts = localStorage.getItem('be-stock-v14');
+    const savedProducts = localStorage.getItem('be-stock-v15');
     const savedCart = localStorage.getItem('be-cart');
     const savedPromos = localStorage.getItem('be-promos');
     
@@ -73,7 +73,7 @@ export default function Home() {
     setIsLoaded(true);
   }, []);
 
-  useEffect(() => { if (isLoaded) localStorage.setItem('be-stock-v14', JSON.stringify(products)); }, [products, isLoaded]);
+  useEffect(() => { if (isLoaded) localStorage.setItem('be-stock-v15', JSON.stringify(products)); }, [products, isLoaded]);
   useEffect(() => { if (isLoaded) localStorage.setItem('be-cart', JSON.stringify(cart)); }, [cart, isLoaded]);
   useEffect(() => { if (isLoaded) localStorage.setItem('be-promos', JSON.stringify(promoCodes)); }, [promoCodes, isLoaded]);
 
@@ -144,11 +144,20 @@ export default function Home() {
       
       <ChatBot />
 
-      <div className="fixed top-0 left-0 w-full h-8 bg-[#0A1128] text-white z-[60] flex items-center justify-center overflow-hidden border-b border-white/10 px-4">
-          <div className="text-xs font-bold uppercase tracking-widest text-center">
-              <span className="hidden md:inline">⚡ Profitez de 10% de réduction sur vos commandes de 10.000fr maximum</span>
-              <span className="hidden md:inline mx-4">•</span>
-              <span>🚚 Livraison gratuite pour les commandes de plus de 20.000fr</span>
+      <div className="fixed top-0 left-0 w-full h-8 bg-[#0A1128] text-white z-[60] flex items-center overflow-hidden border-b border-white/10">
+          <div className="flex whitespace-nowrap text-xs font-bold uppercase tracking-widest animate-marquee">
+              {[0, 1].map(k => (
+                <div key={k} className="flex shrink-0 items-center" aria-hidden={k === 1}>
+                  {[0, 1, 2].map(j => (
+                    <React.Fragment key={j}>
+                      <span className="px-8">⚡ Profitez de 10% de réduction sur vos commandes de 10.000fr maximum</span>
+                      <span>•</span>
+                      <span className="px-8">🚚 Livraison gratuite pour les commandes de plus de 20.000fr</span>
+                      <span>•</span>
+                    </React.Fragment>
+                  ))}
+                </div>
+              ))}
           </div>
       </div>
 
