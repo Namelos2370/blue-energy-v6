@@ -101,7 +101,8 @@ export default function Home() {
   };
 
   const cartSubTotal = cart.reduce((total, item) => total + (item.price * item.quantity), 0);
-  const discountAmount = appliedPromo ? (cartSubTotal * appliedPromo.percent) / 100 : 0;
+  const PROMO_MIN = 25000;
+  const discountAmount = appliedPromo && cartSubTotal >= PROMO_MIN ? (cartSubTotal * appliedPromo.percent) / 100 : 0;
   const cartFinalTotal = cartSubTotal - discountAmount;
   const cartCount = cart.reduce((count, item) => count + item.quantity, 0);
 
@@ -110,7 +111,7 @@ export default function Home() {
     const found = promoCodes.find(p => p.code === promoInput.toUpperCase().trim());
     if (found) {
         setAppliedPromo(found);
-        setPromoMessage(`Code ${found.code} appliqué (-${found.percent}%)`);
+        setPromoMessage(cartSubTotal >= PROMO_MIN ? `Code ${found.code} appliqué (-${found.percent}%)` : `Code ${found.code} enregistré : la réduction s'applique dès ${PROMO_MIN.toLocaleString()} FCFA d'achat`);
         setPromoInput("");
     } else {
         setPromoMessage("Code invalide ❌");
@@ -150,7 +151,7 @@ export default function Home() {
                 <div key={k} className="flex shrink-0 items-center" aria-hidden={k === 1}>
                   {[0, 1, 2].map(j => (
                     <React.Fragment key={j}>
-                      <span className="px-8">⚡ Profitez de 10% de réduction sur vos commandes de 10.000fr maximum</span>
+                      <span className="px-8">⚡ Profitez de 10% de réduction dès 25.000fr d'achat</span>
                       <span>•</span>
                       <span className="px-8">🚚 Livraison gratuite pour les commandes de plus de 20.000fr</span>
                       <span>•</span>

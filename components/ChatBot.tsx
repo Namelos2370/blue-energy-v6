@@ -33,7 +33,7 @@ export default function ChatBot() {
       return "Salut ! Prêt à élever vos standards avec notre collection Vision 2026 ?";
     
     if (text.match(/(prix|combien|tarif)/)) 
-      return "Nos prix sont étudiés pour offrir un luxe accessible. Vous trouverez les tarifs exacts de chaque pièce dans la section 'Collection'. Psst... utilisez le code VISION2026 au panier !";
+      return "Nos prix sont étudiés pour offrir un luxe accessible. Vous trouverez les tarifs exacts de chaque pièce dans la section 'Collection'. Psst... utilisez le code VISION2026 au panier : -10% dès 25.000 FCFA d'achat !";
     
     if (text.match(/(qualité|tissu|matière|gsm|lourd)/)) 
       return "C'est notre point fort ! Nous utilisons du coton premium très lourd (220 GSM et plus) et des broderies HD. Le vêtement ne bouge pas, même après plusieurs lavages.";
