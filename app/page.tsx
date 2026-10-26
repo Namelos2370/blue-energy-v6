@@ -40,7 +40,7 @@ export default function Home() {
 
   // --- SAUVEGARDE & LOGIQUE ---
   useEffect(() => {
-    const savedProducts = localStorage.getItem('be-stock-v9');
+    const savedProducts = localStorage.getItem('be-stock-v10');
     const savedCart = localStorage.getItem('be-cart');
     const savedPromos = localStorage.getItem('be-promos');
     
@@ -70,7 +70,7 @@ export default function Home() {
     setIsLoaded(true);
   }, []);
 
-  useEffect(() => { if (isLoaded) localStorage.setItem('be-stock-v9', JSON.stringify(products)); }, [products, isLoaded]);
+  useEffect(() => { if (isLoaded) localStorage.setItem('be-stock-v10', JSON.stringify(products)); }, [products, isLoaded]);
   useEffect(() => { if (isLoaded) localStorage.setItem('be-cart', JSON.stringify(cart)); }, [cart, isLoaded]);
   useEffect(() => { if (isLoaded) localStorage.setItem('be-promos', JSON.stringify(promoCodes)); }, [promoCodes, isLoaded]);
 
@@ -269,7 +269,7 @@ export default function Home() {
       <section id="philosophie" className="py-20 bg-white relative overflow-hidden">
          <div className="max-w-6xl mx-auto px-4 grid md:grid-cols-2 gap-16 items-center">
            <div className="order-2 md:order-1 h-[500px] bg-gray-100 rounded-3xl relative overflow-hidden group">
-              <Image src="/images/hoodie.png" alt="Lifestyle" fill className="object-cover group-hover:scale-105 transition duration-700 opacity-90" />
+              <Image src="/images/ensemble-1.jpg" alt="Lifestyle" fill className="object-cover object-top group-hover:scale-105 transition duration-700 opacity-90" />
               <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent flex items-end p-8"><div><p className="text-white font-bold text-2xl">Designed in Cameroon.</p><p className="text-gray-300 text-sm">Crafted for the world.</p></div></div>
            </div>
            <div className="order-1 md:order-2">

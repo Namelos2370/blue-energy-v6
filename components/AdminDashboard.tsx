@@ -77,7 +77,7 @@ export default function AdminDashboard({ isOpen, onClose, products, setProducts,
       tag: newProduct.tag || "NOUVEAU",
       images: newProduct.images && newProduct.images[0] !== "/images/placeholder.png" 
               ? newProduct.images 
-              : ["/images/hoodie.png"],
+              : ["/images/pull-blanc.jpg"],
       sizes: ["S", "M", "L", "XL"],
       colors: ["Standard"]
     } as unknown as Product;
