@@ -14,7 +14,7 @@ import CheckoutForm from '../components/CheckoutForm';
 import AdminDashboard from '../components/AdminDashboard';
 import ChatBot from '../components/ChatBot';
 
-const COLOR_HEX: Record<string, string> = { Navy: '#14213d', Bordeaux: '#6d1a2b', Kaki: '#5b6340', Sauge: '#a9b8a0', Rouge: '#c8102e', 'Bleu roi': '#1f4fd1', Noir: '#111111', Blanc: '#ffffff', 'Bleu ciel': '#8ec5ea' };
+const COLOR_HEX: Record<string, string> = { Navy: '#14213d', Bordeaux: '#6d1a2b', Kaki: '#5b6340', Sauge: '#a9b8a0', Rouge: '#c8102e', Rose: '#f4b6c2', 'Bleu roi': '#1f4fd1', Noir: '#111111', Blanc: '#ffffff', 'Bleu ciel': '#8ec5ea' };
 
 export default function Home() {
   const [products, setProducts] = useState<Product[]>(INITIAL_PRODUCTS);
@@ -43,7 +43,7 @@ export default function Home() {
 
   // --- SAUVEGARDE & LOGIQUE ---
   useEffect(() => {
-    const savedProducts = localStorage.getItem('be-stock-v15');
+    const savedProducts = localStorage.getItem('be-stock-v16');
     const savedCart = localStorage.getItem('be-cart');
     const savedPromos = localStorage.getItem('be-promos');
     
@@ -73,7 +73,7 @@ export default function Home() {
     setIsLoaded(true);
   }, []);
 
-  useEffect(() => { if (isLoaded) localStorage.setItem('be-stock-v15', JSON.stringify(products)); }, [products, isLoaded]);
+  useEffect(() => { if (isLoaded) localStorage.setItem('be-stock-v16', JSON.stringify(products)); }, [products, isLoaded]);
   useEffect(() => { if (isLoaded) localStorage.setItem('be-cart', JSON.stringify(cart)); }, [cart, isLoaded]);
   useEffect(() => { if (isLoaded) localStorage.setItem('be-promos', JSON.stringify(promoCodes)); }, [promoCodes, isLoaded]);
 
