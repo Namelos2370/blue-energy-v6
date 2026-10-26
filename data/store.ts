@@ -41,18 +41,6 @@ export const INITIAL_PRODUCTS: Product[] = [
     colors: ["Blanc"]
   },
   {
-    id: 2,
-    title: "Classic Polo Navy",
-    price: 7000,
-    tag: "Premium",
-    desc: "Coton piqué, col structuré indéformable, broderie Blue Energy. Une élégance discrète pour le bureau ou les sorties.",
-    category: 'polo',
-    images: ["/images/polo.png"],
-    stock: 25,
-    sizes: ["S", "M", "L", "XL"],
-    colors: ["Navy", "White"]
-  },
-  {
     id: 3,
     title: "Casquette Blue Energy",
     price: 5000,
