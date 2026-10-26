@@ -101,9 +101,10 @@ export const INITIAL_PRODUCTS: Product[] = [
     tag: "Nouveau",
     desc: "T-shirt en coton jersey, col côtelé et coupe ajustée, avec la broderie Blue Energy bleu marine sur la poitrine.",
     category: 't-shirt',
-    images: ["/images/tshirt-sauge.jpg"],
+    images: ["/images/tshirt-sauge.jpg", "/images/tshirt-noir-1.jpg", "/images/tshirt-noir-2.jpg", "/images/tshirt-noir-3.jpg", "/images/tshirt-noir-4.jpg", "/images/tshirt-noir-5.jpg"],
     stock: 20,
     sizes: ["S", "M", "L", "XL"],
-    colors: ["Sauge"]
+    colors: ["Sauge", "Noir"],
+    colorImages: { Sauge: 0, Noir: 1 }
   }
 ];
