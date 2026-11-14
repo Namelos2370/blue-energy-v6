@@ -72,6 +72,18 @@ export const INITIAL_PRODUCTS: Product[] = [
     colors: ["Bleu ciel"]
   },
   {
+    id: 7,
+    title: "Ensemble Blanc",
+    price: 18000,
+    tag: "Nouveau",
+    desc: "Pull à capuche + pantalon jogging assortis en molleton épais, blanc, broderie Blue Energy bleu roi sur les deux pièces. Le look complet, version blanche.",
+    category: 'jogging',
+    images: ["/images/ensemble-blanc-1.jpg", "/images/ensemble-blanc-2.jpg", "/images/ensemble-blanc-3.jpg"],
+    stock: 10,
+    sizes: ["M", "L", "XL", "XXL"],
+    colors: ["Blanc"]
+  },
+  {
     id: 5,
     title: "Polo Manches Longues",
     price: 7000,
