@@ -78,7 +78,7 @@ export const INITIAL_PRODUCTS: Product[] = [
     tag: "Nouveau",
     desc: "Pull à capuche + pantalon jogging assortis en molleton épais, blanc, broderie Blue Energy bleu roi sur les deux pièces. Le look complet, version blanche.",
     category: 'jogging',
-    images: ["/images/ensemble-blanc-1.jpg", "/images/ensemble-blanc-2.jpg", "/images/ensemble-blanc-3.jpg"],
+    images: ["/images/ensemble-blanc-a.jpg", "/images/ensemble-blanc-b.jpg", "/images/ensemble-blanc-c.jpg"],
     stock: 10,
     sizes: ["M", "L", "XL", "XXL"],
     colors: ["Blanc"]
